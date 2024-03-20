@@ -1,4 +1,3 @@
-import { Button } from "@/components/ui/button";
 import { IconGhost } from "@tabler/icons-react";
 
 export default function Home() {
