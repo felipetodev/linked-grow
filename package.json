@@ -8,10 +8,23 @@
     "start": "next start",
     "lint": "next lint"
   },
+  "author": {
+    "name": "Felipe Ossandon",
+    "email": "fe.ossandon.u@gmail.com"
+  },
+  "license": "MIT",
   "dependencies": {
+    "@radix-ui/react-dialog": "^1.0.5",
+    "@radix-ui/react-slot": "^1.0.2",
+    "@tabler/icons-react": "3.1.0",
+    "class-variance-authority": "^0.7.0",
+    "clsx": "^2.1.0",
+    "next": "14.1.4",
+    "next-themes": "^0.3.0",
     "react": "^18",
     "react-dom": "^18",
-    "next": "14.1.4"
+    "tailwind-merge": "^2.2.2",
+    "tailwindcss-animate": "^1.0.7"
   },
   "devDependencies": {
     "typescript": "^5",
