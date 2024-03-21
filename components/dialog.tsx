@@ -15,7 +15,7 @@ export async function Dialog() {
   return (
     <Sheet>
       <SheetTrigger asChild>
-        <Button variant="outline" size='icon'>
+        <Button variant="outline" className="size-9 p-0 flex">
           <IconSettings />
         </Button>
       </SheetTrigger>
