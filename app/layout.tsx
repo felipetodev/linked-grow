@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
+import { cookies } from "next/headers";
 import { Header } from "@/components/header";
 import { Providers } from '@/components/providers'
+import { Resizeable as ResizeableLayout } from '@/components/resizeable-layout'
 import { cn } from "@/lib/utils";
 import "./globals.css";
 
@@ -9,8 +11,8 @@ const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   metadataBase: new URL(`https://${process.env.VERCEL_URL}`),
-  title: "SaaS/cn Template UI",
-  description: "A simple, clean, and responsive UI template for SaaS and web apps.",
+  title: "LinkedGrow - AI",
+  description: "Grow your audience on LinkedIn with AI",
 }
 
 export const viewport = {
@@ -25,8 +27,14 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const layout = cookies().get("react-resizable-panels:layout")
+  const collapsed = cookies().get("react-resizable-panels:collapsed")
+
+  const defaultLayout = layout ? JSON.parse(layout.value) : undefined
+  const defaultCollapsed = collapsed ? JSON.parse(collapsed.value) : undefined
+
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="es" suppressHydrationWarning>
       <body
         className={cn(
           'font-sans antialiased',
@@ -41,7 +49,17 @@ export default function RootLayout({
         >
           <main className="flex flex-col min-h-screen bg-muted/50">
             <Header />
-            {children}
+            <div className="relative flex h-[calc(100vh_-_theme(spacing.16))] overflow-hidden">
+              <ResizeableLayout
+                defaultLayout={defaultLayout}
+                defaultCollapsed={defaultCollapsed}
+                navCollapsedSize={4}
+              >
+                <main className="p-6 flex flex-col gap-y-4">
+                  {children}
+                </main>
+              </ResizeableLayout>
+            </div>
           </main>
         </Providers>
       </body>

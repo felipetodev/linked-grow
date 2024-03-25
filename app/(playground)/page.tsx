@@ -1,14 +1,18 @@
-import { IconGhost } from "@tabler/icons-react";
+import { FeaturesCards } from "@/components/features-cards"
+import { TemplateHeader } from "@/components/template-header"
 
-export default function Home() {
+// interface LayoutProps {
+//   children: React.ReactNode
+// }
+
+export default async function Layout() {
   return (
-    <main className="h-screen w-full grid place-items-center overflow-auto pl-0 peer-[[data-state=open]]:lg:pl-[250px] peer-[[data-state=open]]:xl:pl-[300px] duration-300 ease-in-out">
-      <div className="grid place-items-center mb-20">
-        <IconGhost size={150} />
-        <h1 className="text-6xl font-bold">
-          SaaS UI
-        </h1>
-      </div>
-    </main>
-  );
+    <>
+      <TemplateHeader
+        title="Genera un post con IA"
+        description="Selecciona una plantilla y genera un post con inteligencia artificial"
+      />
+      <FeaturesCards />
+    </>
+  )
 }
