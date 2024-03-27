@@ -96,7 +96,11 @@ export function Resizeable({
           />
         </ResizablePanel>
         <ResizableHandle withHandle />
-        <ResizablePanel className="!overflow-y-scroll" defaultSize={defaultLayout[1]} minSize={30}>
+        <ResizablePanel
+          className="!overflow-y-scroll"
+          defaultSize={defaultLayout[1]}
+          minSize={30}
+        >
           {children}
         </ResizablePanel>
       </ResizablePanelGroup>
