@@ -7,6 +7,7 @@ import { IconBox, IconBulb, IconSparkles } from "@tabler/icons-react"
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "./ui/resizable"
 import { TooltipProvider } from "./ui/tooltip"
 import { Nav } from "./nav"
+import { usePathname } from "next/navigation"
 
 interface ResizeableProps {
   defaultLayout: number[] | undefined
@@ -22,6 +23,9 @@ export function Resizeable({
   children
 }: ResizeableProps) {
   const [isCollapsed, setIsCollapsed] = useState(defaultCollapsed)
+  // check route selected for Nav
+  const path = usePathname()
+
   return (
     <TooltipProvider delayDuration={0}>
       <ResizablePanelGroup
@@ -82,14 +86,14 @@ export function Resizeable({
                 title: "Generador de post",
                 // label: "128",
                 icon: IconSparkles,
-                variant: "default",
+                variant: path === '/' || path.includes('/templates') ? "default" : "ghost",
                 href: '/'
               },
               {
                 title: "Generador de ideas",
                 // label: "9",
                 icon: IconBulb,
-                variant: "ghost",
+                variant: path === '/ideas' ? "default" : "ghost",
                 href: '/ideas'
               },
             ]}
