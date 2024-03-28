@@ -6,8 +6,11 @@ import {
   render,
   createStreamableValue,
 } from 'ai/rsc'
+import { z } from 'zod'
 import OpenAI from 'openai'
 import { PostContent } from '@/components/post-content'
+import { CardsIdeas } from '@/app/ideas/components/cards-ideas'
+import { CardsSkeleton } from '@/app/ideas/components/cards-skeleton'
 import { IconLoader } from '@tabler/icons-react'
 import { postGeneratorPrompt } from '@/lib/prompt'
 import type { PostGenerator } from '../types'
@@ -15,6 +18,17 @@ import type { PostGenerator } from '../types'
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY || ''
 })
+
+function contentMessage ({ type, message }: PostGenerator) {
+  switch (type) {
+    case 'post':
+      return message
+    case 'ideas':
+      return `List of ideas: ${message}`
+    default:
+      return message
+  }
+}
 
 async function submitUserMessage(state: PostGenerator) {
   'use server'
@@ -28,7 +42,7 @@ async function submitUserMessage(state: PostGenerator) {
       {
         id: crypto.randomUUID(),
         role: 'user',
-        content: state.message
+        content: contentMessage(state)
       }
     ]
   })
@@ -77,8 +91,44 @@ async function submitUserMessage(state: PostGenerator) {
       }
 
       return textNode
+    },
+    functions: {
+      listIdeas: {
+        description: 'List of at least 6 different ideas for your next LinkedIn post. Each idea should be separated by a new line.',
+        parameters: z.object({
+          idea: z.object({
+            message: z.string().describe('The message with the ideas to list')
+          })
+        }),
+        render: async function* ({ idea }) {
+          yield (
+            <CardsSkeleton />
+          )
+
+          await new Promise((resolve) => setTimeout(resolve, 1000))
+
+          aiState.done({
+            ...aiState.get(),
+            messages: [
+              ...aiState.get().messages,
+              {
+                id: crypto.randomUUID(),
+                role: 'function',
+                name: 'listIdeas',
+                content: JSON.stringify(idea)
+              }
+            ]
+          })
+
+          console.log(idea)
+
+          // sanitize the message (improve this)
+          const messageIdeas = idea.message.split('\n')
+
+          return <CardsIdeas ideas={messageIdeas} />
+        }
+      },
     }
-    // functions: {}
   })
 
   return {
