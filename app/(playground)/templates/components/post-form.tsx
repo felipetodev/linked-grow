@@ -7,22 +7,21 @@ import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { Separator } from "@/components/ui/separator";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
-import { IconPlus, IconSparkles } from "@tabler/icons-react";
+import { PostFormatDialog } from "./post-format-dialog";
+import { IconPlus, IconSparkles, IconX } from "@tabler/icons-react";
 import { AI } from "@/lib/post/actions";
 import { cn } from "@/lib/utils";
+import { EMPTY_FORMAT } from "@/lib/constants";
+import type { PostGenerator, Tone, ToneOptions } from "@/lib/types";
 
-type Props = {
-  tones: { value: string; label: string }[]
-}
-
-export function PostForm({ tones }: Props) {
+export function PostForm({ tones }: { tones: ToneOptions }) {
   const { submitUserMessage } = useActions()
   const [messages, setMessages] = useUIState<typeof AI>()
 
-  const [state, setState] = useState({
+  const [state, setState] = useState<PostGenerator>({
     message: '',
     tone: '',
-    format: ''
+    format: { type: 'post-generator', format: '', value: '' }
   })
 
   return (
@@ -31,8 +30,10 @@ export function PostForm({ tones }: Props) {
         onSubmit={async (e) => {
           e.preventDefault()
 
+          const { format, ...rest } = state
+
           try {
-            const responseMessage = await submitUserMessage(state)
+            const responseMessage = await submitUserMessage({ ...rest, format: format.format })
             setMessages(currentMessages => [...currentMessages, responseMessage])
           } catch (error) {
             console.error(error)
@@ -63,7 +64,7 @@ export function PostForm({ tones }: Props) {
             id="tone"
             type="single"
             className="flex-wrap justify-start"
-            onValueChange={(value) => setState({ ...state, tone: value })}
+            onValueChange={(value: Tone) => setState({ ...state, tone: value })}
           >
             {tones.map((option) => (
               <ToggleGroupItem
@@ -84,15 +85,60 @@ export function PostForm({ tones }: Props) {
           <Label htmlFor="format" className="font-semibold">
             Selecciona un formato de post
           </Label>
-          <Button
-            id="format"
-            variant='secondary'
-            type='button'
-            onClick={() => console.log('open modal')}
-            className="w-fit"
-          >
-            <IconPlus className="mr-2" /> Formato de post
-          </Button>
+
+          {state.format?.format ? (
+            <div className="p-4 border rounded max-w-md">
+              <div className="grid">
+                <h2 className="truncate overflow-hidden">
+                  {state.format.format.split(' ', 12).join(' ')}
+                </h2>
+                <h4 className="truncate text-xs opacity-50">
+                  {state.format.format.split(' ').slice(12).join(' ').split(' ', 10).join(' ')}
+                </h4>
+              </div>
+              <div className="flex justify-between mt-2">
+                <PostFormatDialog
+                  onFormatChange={(value) => setState({ ...state, format: value })}
+                  selectedTemplate={Number(state.format.value)}
+                >
+                  <Button
+                    id="format"
+                    className="w-fit"
+                    variant='secondary'
+                    type='button'
+                    size='sm'
+                  >
+                    Editar formato seleccionado
+                  </Button>
+                </PostFormatDialog>
+
+                <Button
+                  id="format"
+                  className="w-fit"
+                  variant='destructive'
+                  type='button'
+                  size='sm'
+                  onClick={() => setState({ ...state, format: EMPTY_FORMAT })}
+                >
+                  <IconX size={20} className="mr-1" /> Remover
+                </Button>
+              </div>
+            </div>
+          ) : (
+            <PostFormatDialog
+              onFormatChange={(value) => setState({ ...state, format: value })}
+            >
+              <Button
+                id="format"
+                variant='secondary'
+                type='button'
+                className="w-fit"
+                size='sm'
+              >
+                <IconPlus className="mr-2" /> Formato de post
+              </Button>
+            </PostFormatDialog>
+          )}
         </div>
 
         {/* <Button

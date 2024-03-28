@@ -9,12 +9,14 @@ import {
 import OpenAI from 'openai'
 import { PostContent } from '@/components/post-content'
 import { IconLoader } from '@tabler/icons-react'
+import { postGeneratorPrompt } from '@/lib/prompt'
+import type { PostGenerator } from '../types'
 
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY || ''
 })
 
-async function submitUserMessage(state: { message: string, tone: string }) {
+async function submitUserMessage(state: PostGenerator) {
   'use server'
 
   const aiState = getMutableAIState<typeof AI>()
@@ -43,18 +45,7 @@ async function submitUserMessage(state: { message: string, tone: string }) {
     messages: [
       {
         role: 'system',
-        content: `\
-You are a LinkedIn expert who can help users to grow their network and get more audience.
-You will help to craft engaging posts, articles, and messages and give advice on how to improve their personal brand on LinkedIn.
-
-You must provide a ready-to-publish outcome, in the first person, addressed to other users who see it in their LinkedIn feed.
-${state.tone ? `Use a ${state.tone} tone of voice for the post and bring value to the reader. Important! The post must be in Spanish.` : 'Important! The post must be in Spanish.'}
-You can be funny but always professional. You can be creative but always informative. You can be casual but always respectful. Do not be a clown.
-Do not say that you are an AI or something similar. Do not mention that you are an AI assistant.
-Do not exceed 3080 characters for the LinkedIn post (including spaces and punctuation).
-The actual date for us is ${new Date().toLocaleDateString('en', { year: 'numeric', month: 'long', day: 'numeric' })}.
-
-If the user wants another impossible task, respond that you are a beta demo and cannot do that.`
+        content: await postGeneratorPrompt(state),
       },
       ...aiState.get().messages.map((message: any) => ({
         role: message.role,
