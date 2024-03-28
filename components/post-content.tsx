@@ -53,22 +53,22 @@ export function PostContent({
       <footer className="flex gap-x-4 w-full">
         <Tooltip delayDuration={0}>
           <TooltipTrigger asChild>
-            <Button className="size-9 p-0 w-full">
-              <IconBookmark />
+            <Button size='sm' className="size-9 p-0 w-full">
+              <IconBookmark size={20} />
             </Button>
           </TooltipTrigger>
-          <TooltipContent className="flex items-center gap-4">
+          <TooltipContent className="text-xs flex items-center gap-4">
             Guardar post
           </TooltipContent>
         </Tooltip>
 
         <Tooltip delayDuration={0}>
           <TooltipTrigger asChild>
-            <Button className="size-9 p-0 w-full">
-              <IconEdit />
+            <Button size='sm' className="size-9 p-0 w-full">
+              <IconEdit size={20} />
             </Button>
           </TooltipTrigger>
-          <TooltipContent className="flex items-center gap-4">
+          <TooltipContent className="text-xs flex items-center gap-4">
             Editar post
           </TooltipContent>
         </Tooltip>

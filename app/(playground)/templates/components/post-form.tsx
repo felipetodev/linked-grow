@@ -21,7 +21,8 @@ export function PostForm({ tones }: { tones: ToneOptions }) {
   const [state, setState] = useState<PostGenerator>({
     message: '',
     tone: '',
-    format: { type: 'post-generator', format: '', value: '' }
+    format: { type: 'post-generator', format: '', value: '' },
+    type: 'post'
   })
 
   return (
@@ -33,7 +34,7 @@ export function PostForm({ tones }: { tones: ToneOptions }) {
           const { format, ...rest } = state
 
           try {
-            const responseMessage = await submitUserMessage({ ...rest, format: format.format })
+            const responseMessage = await submitUserMessage({ ...rest, format: format.format, type: 'post' })
             setMessages(currentMessages => [...currentMessages, responseMessage])
           } catch (error) {
             console.error(error)
@@ -155,23 +156,19 @@ export function PostForm({ tones }: { tones: ToneOptions }) {
         </Button>
 
       </form>
-      <div>
-        <div>
-          <div className="grid w-full gap-y-4">
-            <h3 className={cn(labelVariants(), 'font-semibold')}>
-              Output
-            </h3>
-            <span className="text-xs">
-              Aquí se mostrará el contenido generado por la IA. Puedes modificarlo y personalizarlo a tu gusto.
-            </span>
-            {messages.map((message, index) => (
-              <div key={message.id}>
-                {message.display}
-                {index < messages.length - 1 && <Separator className="my-4" />}
-              </div>
-            ))}
+      <div className="flex flex-col w-full gap-y-4">
+        <h3 className={cn(labelVariants(), 'font-semibold')}>
+          Output
+        </h3>
+        <span className="text-xs">
+          Aquí se mostrará el contenido generado por la IA. Puedes modificarlo y personalizarlo a tu gusto.
+        </span>
+        {messages.map((message, index) => (
+          <div key={message.id}>
+            {message.display}
+            {index < messages.length - 1 && <Separator className="my-4" />}
           </div>
-        </div>
+        ))}
       </div>
     </div>
   )

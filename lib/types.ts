@@ -12,4 +12,5 @@ export type PostGenerator = {
     format: string,
     value: string
   }
+  type: 'post' | 'ideas'
 }
