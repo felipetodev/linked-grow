@@ -8,6 +8,8 @@ import { Button } from "./ui/button"
 import { Tooltip, TooltipContent, TooltipTrigger } from "./ui/tooltip"
 import { MemoizedReactMarkdown } from "./ui/markdown"
 import { PostEditDrawer } from "@/app/(playground)/templates/components/post-edit-drawer"
+import { useUser, useClerk } from "@clerk/clerk-react"
+import { usePathname } from "next/navigation"
 
 export function PostContent({
   content,
@@ -16,7 +18,10 @@ export function PostContent({
   content: string | StreamableValue<string>
   className?: string
 }) {
+  const { isSignedIn } = useUser();
+  const clerk = useClerk();
   const text = useStreamableText(content)
+  const pathname = usePathname();
   return (
     <div className={cn('border rounded group relative flex flex-col gap-y-8 items-start p-2', className)}>
       {text?.length > 0 && (
@@ -54,9 +59,20 @@ export function PostContent({
       <footer className="flex gap-x-4 w-full">
         <Tooltip delayDuration={0}>
           <TooltipTrigger asChild>
-            <Button size='sm' className="size-9 p-0 w-full">
-              <IconBookmark size={20} />
-            </Button>
+            {isSignedIn ? (
+              <Button size='sm' className="size-9 p-0 w-full">
+                <IconBookmark size={20} />
+              </Button>
+
+            ) : (
+              <Button
+                size='sm'
+                className="size-9 p-0 w-full"
+                onClick={() => clerk.openSignIn({ redirectUrl: pathname })}
+              >
+                <IconBookmark size={20} />
+              </Button>
+            )}
           </TooltipTrigger>
           <TooltipContent className="text-xs flex items-center gap-4">
             Guardar post

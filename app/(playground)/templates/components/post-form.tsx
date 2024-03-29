@@ -47,7 +47,7 @@ export function PostForm({ tones, initialPost }: { tones: ToneOptions, initialPo
             console.error(error)
           }
         }}
-        className="sticky top-6 h-max flex flex-col gap-y-6"
+        className="md:sticky md:top-6 h-max flex flex-col gap-y-6"
       >
         <div className="grid w-full gap-y-4">
           <Label htmlFor="message" className="font-semibold">
