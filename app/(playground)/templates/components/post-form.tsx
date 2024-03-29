@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useActions, useUIState } from "ai/rsc";
 import { Label, labelVariants } from "@/components/ui/label";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
@@ -14,16 +14,23 @@ import { cn } from "@/lib/utils";
 import { EMPTY_FORMAT } from "@/lib/constants";
 import type { PostGenerator, Tone, ToneOptions } from "@/lib/types";
 
-export function PostForm({ tones }: { tones: ToneOptions }) {
+const DEFAULT_POST: PostGenerator = {
+  message: '',
+  tone: '',
+  format: { type: 'post-generator', format: '', value: '' },
+  type: 'post'
+}
+
+export function PostForm({ tones, initialPost }: { tones: ToneOptions, initialPost?: string }) {
+  const [state, setState] = useState(DEFAULT_POST)
   const { submitUserMessage } = useActions()
   const [messages, setMessages] = useUIState<typeof AI>()
 
-  const [state, setState] = useState<PostGenerator>({
-    message: '',
-    tone: '',
-    format: { type: 'post-generator', format: '', value: '' },
-    type: 'post'
-  })
+  useEffect(() => {
+    if (initialPost) {
+      setState({ ...state, message: initialPost })
+    }
+  }, [])
 
   return (
     <div className="grid md:grid-cols-2 gap-8">
@@ -40,7 +47,7 @@ export function PostForm({ tones }: { tones: ToneOptions }) {
             console.error(error)
           }
         }}
-        className="flex flex-col gap-y-6"
+        className="sticky top-6 h-max flex flex-col gap-y-6"
       >
         <div className="grid w-full gap-y-4">
           <Label htmlFor="message" className="font-semibold">
