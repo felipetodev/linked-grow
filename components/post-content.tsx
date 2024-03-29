@@ -7,6 +7,7 @@ import { cn } from "@/lib/utils"
 import { Button } from "./ui/button"
 import { Tooltip, TooltipContent, TooltipTrigger } from "./ui/tooltip"
 import { MemoizedReactMarkdown } from "./ui/markdown"
+import { PostEditDrawer } from "@/app/(playground)/templates/components/post-edit-drawer"
 
 export function PostContent({
   content,
@@ -63,11 +64,13 @@ export function PostContent({
         </Tooltip>
 
         <Tooltip delayDuration={0}>
-          <TooltipTrigger asChild>
-            <Button size='sm' className="size-9 p-0 w-full">
-              <IconEdit size={20} />
-            </Button>
-          </TooltipTrigger>
+          <PostEditDrawer>
+            <TooltipTrigger asChild>
+              <Button size='sm' className="size-9 p-0 w-full">
+                <IconEdit size={20} />
+              </Button>
+            </TooltipTrigger>
+          </PostEditDrawer>
           <TooltipContent className="text-xs flex items-center gap-4">
             Editar post
           </TooltipContent>
