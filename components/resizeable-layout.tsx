@@ -61,7 +61,7 @@ export function Resizeable({
             "min-w-[50px] transition-all duration-300 ease-in-out"
           )}
         >
-          <div
+          {/* <div
             className={cn(
               "flex h-[52px] items-center justify-center",
               isCollapsed ? "h-[52px]" : "px-2"
@@ -77,7 +77,7 @@ export function Resizeable({
                 </Link>
               </div>
             )}
-          </div>
+          </div> */}
           {/* <Separator /> */}
           <Nav
             isCollapsed={isCollapsed}
