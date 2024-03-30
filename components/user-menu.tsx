@@ -11,8 +11,8 @@ import {
   DropdownMenuTrigger
 } from "./ui/dropdown-menu";
 import { ThemeSwitch } from "./theme-switch";
-import { type User } from "@clerk/nextjs/server";
 import { SignOut } from "./sign-out";
+import { type User } from "@clerk/nextjs/server";
 
 export async function UserMenu({ user }: { user: User }) {
 
@@ -35,7 +35,7 @@ export async function UserMenu({ user }: { user: User }) {
               <div className="flex justify-between items-center">
                 <div className="flex flex-col">
                   <span className="truncate">{user.firstName + ' ' + user.lastName}</span>
-                  <span className="truncate text-xs text-[#606060] font-normal">
+                  <span className="truncate text-xs opacity-60 font-normal">
                     {user?.emailAddresses[0].emailAddress}
                   </span>
                 </div>
