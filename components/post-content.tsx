@@ -7,7 +7,7 @@ import { cn } from "@/lib/utils"
 import { Button } from "./ui/button"
 import { Tooltip, TooltipContent, TooltipTrigger } from "./ui/tooltip"
 import { MemoizedReactMarkdown } from "./ui/markdown"
-import { PostEditDrawer } from "@/app/(playground)/templates/components/post-edit-drawer"
+import { PostEditDrawer } from "@/app/(dashboard)/templates/components/post-edit-drawer"
 import { useUser, useClerk } from "@clerk/clerk-react"
 import { usePathname } from "next/navigation"
 
