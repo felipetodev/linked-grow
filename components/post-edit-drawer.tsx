@@ -23,7 +23,7 @@ const PostEditDrawer = React.forwardRef<HTMLButtonElement, Props>(({ text, child
       <SheetTrigger asChild ref={ref}>
         {children}
       </SheetTrigger>
-      <SheetContent className="!max-w-full !w-full !h-[calc(100vh_-_theme(spacing.16))] mt-auto overflow-y-auto">
+      <SheetContent className="border-t !max-w-full !w-full !h-[calc(100vh_-_theme(spacing.16))] mt-auto overflow-y-auto">
         <div>
           <h3 className="text-lg font-semibold text-foreground">
             Escribe tu post
