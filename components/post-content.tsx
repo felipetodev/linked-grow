@@ -1,5 +1,6 @@
 'use client'
 
+import { useState } from "react"
 import { StreamableValue } from "ai/rsc"
 import { useStreamableText } from "@/lib/hooks/use-streamable-text"
 import { IconBookmark, IconEdit, IconWorld } from "@tabler/icons-react"
@@ -7,7 +8,7 @@ import { cn } from "@/lib/utils"
 import { Button } from "./ui/button"
 import { Tooltip, TooltipContent, TooltipTrigger } from "./ui/tooltip"
 import { MemoizedReactMarkdown } from "./ui/markdown"
-import { PostEditDrawer } from "@/app/(dashboard)/templates/components/post-edit-drawer"
+import { PostEditDrawer } from "@/components/post-edit-drawer"
 import { useUser, useClerk } from "@clerk/clerk-react"
 import { usePathname } from "next/navigation"
 
@@ -18,6 +19,7 @@ export function PostContent({
   content: string | StreamableValue<string>
   className?: string
 }) {
+  const [editText, setEditText] = useState<undefined | string>()
   const { isSignedIn } = useUser();
   const clerk = useClerk();
   const text = useStreamableText(content)
@@ -53,7 +55,7 @@ export function PostContent({
             }
           }}
         >
-          {text}
+          {editText ?? text}
         </MemoizedReactMarkdown>
       </div>
       <footer className="flex gap-x-4 w-full">
@@ -80,14 +82,16 @@ export function PostContent({
         </Tooltip>
 
         <Tooltip delayDuration={0}>
-          <PostEditDrawer>
+          <PostEditDrawer text={editText ?? text} onEditText={setEditText}>
             <TooltipTrigger asChild>
               <Button size='sm' className="size-9 p-0 w-full">
                 <IconEdit size={20} />
               </Button>
             </TooltipTrigger>
           </PostEditDrawer>
-          <TooltipContent className="text-xs flex items-center gap-4">
+          <TooltipContent
+            className="text-xs flex items-center gap-4"
+          >
             Editar post
           </TooltipContent>
         </Tooltip>
