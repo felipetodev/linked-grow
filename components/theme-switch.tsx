@@ -1,7 +1,7 @@
 // Ref: https://github.com/midday-ai/midday/blob/907c51954ac103b14d40a2712428d5e7af982c7d/apps/dashboard/src/components/theme-switch.tsx
 "use client";
 
-import { IconDeviceHeartMonitor, IconMoon, IconSun } from "@tabler/icons-react"
+import { IconDeviceLaptop, IconMoon, IconSun } from "@tabler/icons-react"
 import { useTheme } from "next-themes";
 
 import {
@@ -24,7 +24,7 @@ const ThemeIcon = ({ currentTheme }: Props) => {
     case "dark":
       return <IconMoon size={12} />;
     case "system":
-      return <IconDeviceHeartMonitor size={12} />;
+      return <IconDeviceLaptop size={12} />;
     default:
       return <IconSun size={12} />;
   }
