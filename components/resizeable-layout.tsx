@@ -1,7 +1,6 @@
 'use client'
 
 import { useState } from "react"
-import Link from "next/link"
 import { cn } from "@/lib/utils"
 import { IconBox, IconBulb, IconSparkles } from "@tabler/icons-react"
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "./ui/resizable"
@@ -96,6 +95,13 @@ export function Resizeable({
                 variant: path === '/ideas' ? "default" : "ghost",
                 href: '/ideas'
               },
+              {
+                title: "Posts",
+                // label: "2",
+                icon: IconBox,
+                variant: path === '/posts' ? "default" : "ghost",
+                href: '/posts'
+              }
             ]}
           />
         </ResizablePanel>
