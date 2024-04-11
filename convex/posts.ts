@@ -52,7 +52,7 @@ export const getPost = query({
     const user = await getUser(ctx);
 
     if (!user) {
-      throw new Error("Not authenticated")
+      return null
     }
 
     return await ctx.db.get(args.postId);
