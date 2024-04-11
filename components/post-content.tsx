@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from "react"
+import { useState, useRef } from "react"
 import { StreamableValue } from "ai/rsc"
 import { useStreamableText } from "@/lib/hooks/use-streamable-text"
 import { IconBookmark, IconEdit, IconWorld } from "@tabler/icons-react"
@@ -11,6 +11,10 @@ import { MemoizedReactMarkdown } from "./ui/markdown"
 import { PostEditDrawer } from "@/components/post-edit-drawer"
 import { useUser, useClerk } from "@clerk/clerk-react"
 import { usePathname } from "next/navigation"
+import { useMutation } from "convex/react"
+import { api } from "@/convex/_generated/api"
+import { toast } from "sonner";
+import { type Id } from "@/convex/_generated/dataModel"
 
 export function PostContent({
   content,
@@ -19,11 +23,44 @@ export function PostContent({
   content: string | StreamableValue<string>
   className?: string
 }) {
+  const [isLoading, setIsLoading] = useState(false)
+  const [postId, setPostId] = useState<Id<"posts"> | undefined>(undefined)
   const [editText, setEditText] = useState<undefined | string>()
+  const submittedContent = useRef<string | undefined>(undefined)
+
   const { isSignedIn } = useUser();
   const clerk = useClerk();
   const text = useStreamableText(content)
   const pathname = usePathname();
+
+  const createPost = useMutation(api.posts.createPost)
+  const updatePostByUUID = useMutation(api.posts.updatePost)
+
+  const handleSavePost = async () => {
+    setIsLoading(true)
+    submittedContent.current = editText
+
+    if (submittedContent.current === editText && postId) {
+      await updatePostByUUID({ content: editText ?? text, postId })
+      toast.success('Post guardado')
+      setIsLoading(false)
+      return
+    }
+
+    try {
+      const postId = await createPost({ content: editText ?? text, status: 'draft' })
+      toast.success('Post guardado')
+      setPostId(postId)
+      setIsLoading(false)
+    } catch {
+      toast.error('Error al guardar el post')
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
+  const hasChanges = submittedContent.current !== editText
+
   return (
     <div className={cn('border rounded group relative flex flex-col gap-y-8 items-start p-2', className)}>
       {text?.length > 0 && (
@@ -62,7 +99,15 @@ export function PostContent({
         <Tooltip delayDuration={0}>
           <TooltipTrigger asChild>
             {isSignedIn ? (
-              <Button size='sm' className="size-9 p-0 w-full">
+              <Button
+                size='sm'
+                disabled={(!hasChanges && Boolean(postId))}
+                className={cn("size-9 p-0 w-full", {
+                  'bg-green-600 cursor-not-allowed': (!hasChanges && postId)
+                })}
+                onClick={handleSavePost}
+              >
+                {isLoading && <span className="mr-1.5">Guardando...</span>}
                 <IconBookmark size={20} />
               </Button>
 
@@ -82,7 +127,12 @@ export function PostContent({
         </Tooltip>
 
         <Tooltip delayDuration={0}>
-          <PostEditDrawer text={editText ?? text} onEditText={setEditText}>
+          <PostEditDrawer
+            text={editText ?? text}
+            disableSave={(!hasChanges && Boolean(postId))}
+            onEditText={setEditText}
+            onSavePost={handleSavePost}
+          >
             <TooltipTrigger asChild>
               <Button size='sm' className="size-9 p-0 w-full">
                 <IconEdit size={20} />

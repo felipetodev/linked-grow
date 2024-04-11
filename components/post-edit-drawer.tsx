@@ -13,17 +13,20 @@ import { publishPost } from "@/app/actions/post"
 import { PostConfirmModal } from "./post-confirm-modal"
 import { IconSend } from "@tabler/icons-react"
 import confetti from "canvas-confetti"
+import { cn } from "@/lib/utils"
 
 type Props = {
   text: string
+  disableSave: boolean
   onEditText: (text: string) => void
+  onSavePost: () => void
   children: React.ReactNode
 }
 
 const PostEditDrawer = React.forwardRef<
   HTMLButtonElement,
   Props
->(({ text, children, onEditText }, ref) => {
+>(({ text, disableSave, children, onSavePost, onEditText }, ref) => {
   const [isLoading, setIsLoading] = React.useState(false)
   const canvas = React.useRef<HTMLCanvasElement>(null);
   const successRef = React.useRef(false);
@@ -75,8 +78,14 @@ const PostEditDrawer = React.forwardRef<
           </div>
         </div>
         <SheetFooter className="flex justify-between">
-          <Button variant="secondary">
-            Guardar borrador
+          <Button
+            onClick={onSavePost}
+            disabled={disableSave}
+            className={cn({
+              'bg-green-600 cursor-not-allowed': disableSave
+            })}
+          >
+            Guardar post
           </Button>
           <PostConfirmModal
             isSuccess={successRef.current}
