@@ -7,7 +7,7 @@ type Props = {
 
 export function TemplateHeader({ title, description }: Props) {
   return (
-    <nav className="flex flex-col gap-y-2">
+    <nav className="flex flex-col gap-y-2 mb-6">
       <h2 className="text-4xl font-semibold">
         {title}
       </h2>

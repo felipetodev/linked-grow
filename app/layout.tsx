@@ -4,6 +4,7 @@ import { cookies } from "next/headers";
 import { Header } from "@/components/header";
 import { Providers } from '@/components/providers'
 import { Resizeable as ResizeableLayout } from '@/components/resizeable-layout'
+import { Toaster } from "@/components/ui/sonner";
 import { cn } from "@/lib/utils";
 import "./globals.css";
 
@@ -41,6 +42,7 @@ export default function RootLayout({
           inter.className,
         )}
       >
+        <Toaster position="top-center" />
         <Providers
           attribute="class"
           defaultTheme="system"
@@ -55,7 +57,7 @@ export default function RootLayout({
                 defaultCollapsed={defaultCollapsed}
                 navCollapsedSize={4}
               >
-                <main className="p-6 flex flex-col gap-y-4">
+                <main className="p-6 flex flex-col">
                   {children}
                 </main>
               </ResizeableLayout>
