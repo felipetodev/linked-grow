@@ -2,7 +2,7 @@
 
 import { useState } from "react"
 import { cn } from "@/lib/utils"
-import { IconBox, IconBulb, IconSparkles } from "@tabler/icons-react"
+import { IconBox, IconBulb, IconChartLine, IconSparkles } from "@tabler/icons-react"
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "./ui/resizable"
 import { TooltipProvider } from "./ui/tooltip"
 import { Nav } from "./nav"
@@ -101,6 +101,13 @@ export function Resizeable({
                 icon: IconBox,
                 variant: path === '/posts' ? "default" : "ghost",
                 href: '/posts'
+              },
+              {
+                title: "Analíticas",
+                // label: "2",
+                icon: IconChartLine,
+                variant: path === '/analytics' ? "default" : "ghost",
+                href: '/analytics',
               }
             ]}
           />
