@@ -20,7 +20,7 @@ export const createPost = mutation({
     return await ctx.db.insert("posts", {
       content: args.content,
       status: args.status,
-      author: user.name,
+      author: user?.name ?? "Unknown User",
       userId: user.subject,
       updatedAt: currentTimeMillis
     })
@@ -52,7 +52,7 @@ export const getPost = query({
     const user = await getUser(ctx);
 
     if (!user) {
-      return {};
+      throw new Error("Not authenticated")
     }
 
     return await ctx.db.get(args.postId);
