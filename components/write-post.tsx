@@ -85,7 +85,7 @@ export function WritePost({ postId }: { postId: Id<"posts"> }) {
           </TabsList>
           <TabsContent value="editor">
             <Editor text={content} onEditText={setContent} />
-            <div className="mt-4 ml-auto">
+            <div className="mt-4 ml-auto space-x-2">
               <Button variant="secondary" onClick={handleDraft}>
                 Guardar borrador
               </Button>
@@ -118,7 +118,7 @@ export function WritePost({ postId }: { postId: Id<"posts"> }) {
         <div className="grid xl:grid-cols-2 gap-x-2 overflow-y-auto">
           <div className="flex flex-col">
             <Editor text={content} onEditText={setContent} />
-            <div className="mt-4 ml-auto">
+            <div className="mt-4 ml-auto space-x-4">
               <Button variant="secondary" onClick={handleDraft}>
                 Guardar borrador
               </Button>
