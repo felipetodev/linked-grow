@@ -5,7 +5,7 @@ import { getUser } from "./utils";
 export const createPost = mutation({
   args: {
     content: v.string(),
-    status: v.string()
+    status: v.string() // add enum 'draft' | 'published'
   },
   handler: async (ctx, args) => {
     const user = await getUser(ctx);
@@ -28,7 +28,9 @@ export const createPost = mutation({
 })
 
 export const getPosts = query({
-  args: {},
+  args: {
+    status: v.string()
+  },
   handler: async (ctx, args) => {
     const user = await getUser(ctx);
 
@@ -39,6 +41,7 @@ export const getPosts = query({
     return (await ctx.db
       .query("posts")
       .filter(q => q.eq(q.field('userId'), user.subject))
+      .filter(q => q.eq(q.field('status'), args.status))
       .collect())
       .sort((a, b) => b.updatedAt - a.updatedAt)
   }
@@ -54,6 +57,8 @@ export const getPost = query({
     if (!user) {
       return null
     }
+
+    // check if postId exists and belongs to user
 
     return await ctx.db.get(args.postId);
   }
@@ -71,6 +76,27 @@ export const updatePost = mutation({
       throw new Error("Not authenticated")
     }
 
-    await ctx.db.patch(args.postId, { content: args.content })
+    const currentDate = new Date();
+    const currentTimeMillis = currentDate.getTime();
+
+    await ctx.db.patch(args.postId, {
+      content: args.content,
+      updatedAt: currentTimeMillis
+    })
   }
 })
+
+export const deletePost = mutation({
+  args: {
+    postId: v.id("posts")
+  },
+  handler: async (ctx, args) => {
+    const user = await getUser(ctx);
+
+    if (!user) {
+      throw new Error("Not authenticated")
+    }
+
+    await ctx.db.delete(args.postId);
+  }
+});

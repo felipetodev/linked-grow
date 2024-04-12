@@ -61,7 +61,7 @@ export function LinkedInPreview({ author, content }: { author?: string, content:
           onClick={() => setIsOpen(!isOpen)}
           className="absolute right-0 bottom-0 text-sm opacity-60 font-medium hover:opacity-100 hover:text-[#0b66c2] hover:underline"
         >
-          ...ver más
+          {isOpen ? "...ver menos" : "...ver más"}
         </button>
       </div>
       <footer className="mt-3">
