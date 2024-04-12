@@ -7,6 +7,10 @@ export default defineSchema({
     content: v.string(),
     updatedAt: v.float64(),
     userId: v.string(),
-    status: v.string(),
+    postUrn: v.optional(v.string()),
+    status: v.union(
+      v.literal("draft"),
+      v.literal("published")
+    ),
   }),
 });

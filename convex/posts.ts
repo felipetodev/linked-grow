@@ -5,7 +5,11 @@ import { getUser } from "./utils";
 export const createPost = mutation({
   args: {
     content: v.string(),
-    status: v.string() // add enum 'draft' | 'published'
+    status: v.union(
+      v.literal("draft"),
+      v.literal("published")
+    ),
+    postUrn: v.optional(v.string()) // fix schema
   },
   handler: async (ctx, args) => {
     const user = await getUser(ctx);
@@ -20,6 +24,7 @@ export const createPost = mutation({
     return await ctx.db.insert("posts", {
       content: args.content,
       status: args.status,
+      postUrn: args.postUrn,
       author: user?.name ?? "Unknown User",
       userId: user.subject,
       updatedAt: currentTimeMillis
@@ -67,7 +72,12 @@ export const getPost = query({
 export const updatePost = mutation({
   args: {
     postId: v.id("posts"),
-    content: v.string()
+    content: v.string(),
+    status: v.union(
+      v.literal("draft"),
+      v.literal("published")
+    ),
+    postUrn: v.optional(v.string()) // fix schema
   },
   handler: async (ctx, args) => {
     const user = await getUser(ctx);
@@ -81,6 +91,8 @@ export const updatePost = mutation({
 
     await ctx.db.patch(args.postId, {
       content: args.content,
+      status: args.status,
+      postUrn: args.postUrn,
       updatedAt: currentTimeMillis
     })
   }

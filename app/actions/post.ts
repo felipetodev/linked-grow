@@ -106,5 +106,7 @@ export async function publishPost({ text, comment }: { text: string, comment?: s
     })
     : post
 
+  console.info("Post created successfully 🚀: ", post?.id)
+
   return { postUrn: post?.id }
 }

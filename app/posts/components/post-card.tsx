@@ -1,39 +1,30 @@
-import Link from "next/link"
-import { Button, buttonVariants } from "@/components/ui/button"
 import { MemoizedReactMarkdown } from "@/components/ui/markdown"
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from "@/components/ui/alert-dialog"
-import { IconEdit, IconTrash } from "@tabler/icons-react"
-import { useMutation } from "convex/react"
-import { api } from "@/convex/_generated/api"
-import { type Id } from "@/convex/_generated/dataModel"
-import { cn } from "@/lib/utils"
-import { toast } from "sonner"
 import TimeAgo from "@/lib/hooks/use-time-ago"
+import { CardFooterDraft } from "./card-footer-draft"
+import { type Id } from "@/convex/_generated/dataModel"
+import { CardFooterPublished } from "./card-footer-published"
 
 const maxChars = 200
 
 type Props = {
+  status: "draft" | "published"
   content: string
   author: string
   _id: Id<"posts">
   updatedAt: number
+  postUrn?: string
 }
 
-export function PostCard({ content, author, _id: postId, updatedAt }: Props) {
+export function PostCard({
+  _id: postId,
+  content,
+  status,
+  author,
+  postUrn,
+  updatedAt,
+}: Props) {
   const contentLength = content.length
   const content_ = contentLength > maxChars ? content.slice(0, maxChars) + '...' : content
-
-  const deletePost = useMutation(api.posts.deletePost)
 
   return (
     <div className="grid border h-[400px] max-h-[400px] p-4 rounded shadow-lg overflow-hidden transition duration-300 hover:-translate-y-2 hover:shadow-xl">
@@ -65,42 +56,8 @@ export function PostCard({ content, author, _id: postId, updatedAt }: Props) {
       >
         {content_}
       </MemoizedReactMarkdown>
-      <footer className="flex gap-4 mt-auto">
-        <Link href={`/new/${postId}`} className={cn(buttonVariants(), 'w-full')}>
-          <IconEdit size={20} />
-        </Link>
-        <AlertDialog>
-          <AlertDialogTrigger asChild>
-            <Button className="w-full" variant='destructive'>
-              <IconTrash size={20} />
-            </Button>
-          </AlertDialogTrigger>
-          <AlertDialogContent>
-            <AlertDialogHeader>
-              <AlertDialogTitle>¿Estas seguro de eliminar este post?</AlertDialogTitle>
-              <AlertDialogDescription>
-                Esta acción no se puede deshacer.
-                Se eliminará permanentemente el post de nuestra base de datos.
-              </AlertDialogDescription>
-            </AlertDialogHeader>
-            <AlertDialogFooter>
-              <AlertDialogCancel>Cancel</AlertDialogCancel>
-              <AlertDialogAction
-                onClick={async () => {
-                  try {
-                    await deletePost({ postId })
-                    toast.success("Post eliminado")
-                  } catch {
-                    toast.error("Error al eliminar el post")
-                  }
-                }}
-              >
-                Eliminar
-              </AlertDialogAction>
-            </AlertDialogFooter>
-          </AlertDialogContent>
-        </AlertDialog>
-      </footer>
+      {status === 'draft' && <CardFooterDraft postId={postId} />}
+      {status === 'published' && <CardFooterPublished postUrn={postUrn} />}
     </div>
   )
 }
