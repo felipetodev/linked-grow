@@ -35,7 +35,7 @@ export async function UserMenu({ user }: { user: User }) {
               <div className="flex justify-between items-center">
                 <div className="flex flex-col">
                   <span className="truncate">{user.firstName + ' ' + user.lastName}</span>
-                  <span className="truncate text-xs opacity-60 font-normal">
+                  <span className="truncate text-xs opacity-60 font-normal max-w-[20ch]">
                     {user?.emailAddresses[0].emailAddress}
                   </span>
                 </div>
