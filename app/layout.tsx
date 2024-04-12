@@ -42,7 +42,7 @@ export default function RootLayout({
           inter.className,
         )}
       >
-        <Toaster position="top-center" />
+        <Toaster position="top-center" richColors />
         <Providers
           attribute="class"
           defaultTheme="system"
