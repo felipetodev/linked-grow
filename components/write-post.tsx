@@ -34,6 +34,7 @@ export function WritePost({ postId }: { postId: Id<"posts"> }) {
   }, [post])
 
   if (!content) {
+    // add skeleton loader
     return <span className="font-semibold p-4">Cargando...</span>
   }
 
@@ -43,21 +44,24 @@ export function WritePost({ postId }: { postId: Id<"posts"> }) {
     const result = await publishPost({ text: content, comment })
 
     if (result && 'error' in result) {
-      alert(result.error) // use toast
-      return setIsLoading(false)
+      toast.error(result.error) // use toast
+      setIsLoading(false)
+      return
     }
 
-    const cannon = confetti.create(canvas.current as HTMLCanvasElement, {
-      resize: true
-    });
-
-    cannon({
-      particleCount: 500,
-      spread: 360,
-      zIndex: 999
-    });
-
     if (result.postUrn) {
+      await updatePost({ postId, content, status: "published", postUrn: result.postUrn })
+
+      const cannon = confetti.create(canvas.current as HTMLCanvasElement, {
+        resize: true
+      });
+
+      cannon({
+        particleCount: 500,
+        spread: 360,
+        zIndex: 999
+      });
+
       urlRef.current = result.postUrn
       successRef.current = true
     }
@@ -66,9 +70,13 @@ export function WritePost({ postId }: { postId: Id<"posts"> }) {
   }
 
   const handleDraft = async () => {
-    // save draft
+    if (urlRef.current !== "" && urlRef.current) {
+      toast.info("No puedes guardar un borrador después de publicar")
+      return
+    }
+
     try {
-      await updatePost({ postId, content })
+      await updatePost({ postId, content, status: "draft" })
       toast.success("Borrador guardado")
     } catch {
       toast.error("Error al guardar el borrador")

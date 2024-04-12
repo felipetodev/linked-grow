@@ -1,6 +1,6 @@
 "use client"
 
-import * as React from "react"
+import { useState, useEffect } from "react"
 import { IconCheck, IconCirclePlus, IconSelector } from "@tabler/icons-react"
 
 import { Button } from "@/components/ui/button"
@@ -13,18 +13,25 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover"
 import { CommandList } from "cmdk"
-import { useAuth, useOrganization, useOrganizationList } from "@clerk/nextjs"
+import {
+  useAuth,
+  useOrganization,
+  useOrganizationList,
+  useUser
+} from "@clerk/nextjs"
+import { Skeleton } from "./ui/skeleton"
 
 export function CreateWorkspaceButton({ membership }: { membership: any }) {
-  const [open, setOpen] = React.useState(false)
+  const [open, setOpen] = useState(false)
 
+  const { user } = useUser();
   const { organization } = useOrganization();
   const { setActive, isLoaded } = useOrganizationList();
   const { orgId: hasActiveWorkspace } = useAuth();
 
   const firstOrgId = Object.keys(membership ?? {})?.[0];
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (!isLoaded) return;
 
     if (!hasActiveWorkspace && firstOrgId) {
@@ -35,6 +42,10 @@ export function CreateWorkspaceButton({ membership }: { membership: any }) {
   const handleCreateWorkspace = () => {
     console.log("Create workspace")
   }
+
+  if (!user?.fullName) return (
+    <Skeleton className="w-[200px] h-[40px]" />
+  )
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -47,11 +58,11 @@ export function CreateWorkspaceButton({ membership }: { membership: any }) {
         >
           {organization?.name
             ? <span className="truncate">{organization.name}</span>
-            : "Felipe Ossandón"}
+            : user?.fullName ?? "Default"}
           <IconSelector className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="min-w-[80px] p-2">
+      <PopoverContent className="min-w-[250px] max-w-[300px] w-full p-2">
         <Command>
           <CommandList>
             <div className="relative flex items-center rounded-sm px-2 py-1.5 text-xs opacity-70">
@@ -74,7 +85,7 @@ export function CreateWorkspaceButton({ membership }: { membership: any }) {
                 onClick={handleCreateWorkspace}
               >
                 <IconCirclePlus className="mr-2" />
-                Add a new workspace
+                Crear un nuevo workspace
               </Button>
             )}
           </CommandList>

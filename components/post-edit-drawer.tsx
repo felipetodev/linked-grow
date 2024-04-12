@@ -14,10 +14,15 @@ import { PostConfirmModal } from "./post-confirm-modal"
 import { IconSend } from "@tabler/icons-react"
 import confetti from "canvas-confetti"
 import { cn } from "@/lib/utils"
+import { toast } from "sonner"
+import { useMutation } from "convex/react"
+import { api } from "@/convex/_generated/api"
+import { type Id } from "@/convex/_generated/dataModel"
 
 type Props = {
   text: string
   disableSave: boolean
+  postId: Id<"posts"> | undefined
   onEditText: (text: string) => void
   onSavePost: () => void
   children: React.ReactNode
@@ -26,11 +31,14 @@ type Props = {
 const PostEditDrawer = React.forwardRef<
   HTMLButtonElement,
   Props
->(({ text, disableSave, children, onSavePost, onEditText }, ref) => {
+>(({ text, disableSave, postId, children, onSavePost, onEditText }, ref) => {
   const [isLoading, setIsLoading] = React.useState(false)
   const canvas = React.useRef<HTMLCanvasElement>(null);
   const successRef = React.useRef(false);
   const urlRef = React.useRef("");
+
+  const createPost = useMutation(api.posts.createPost)
+  const updatePost = useMutation(api.posts.updatePost)
 
   const handlePublish = async (comment?: string) => {
     setIsLoading(true)
@@ -38,21 +46,28 @@ const PostEditDrawer = React.forwardRef<
     const result = await publishPost({ text, comment })
 
     if (result && 'error' in result) {
-      alert(result.error) // use toast
-      return setIsLoading(false)
+      toast.error(result.error) // use toast
+      setIsLoading(false)
+      return
     }
 
-    const cannon = confetti.create(canvas.current as HTMLCanvasElement, {
-      resize: true
-    });
-
-    cannon({
-      particleCount: 500,
-      spread: 360,
-      zIndex: 999
-    });
-
     if (result.postUrn) {
+      if (postId) {
+        await updatePost({ postId, content: text, status: "published", postUrn: result.postUrn })
+      } else {
+        await createPost({ content: text, status: "published", postUrn: result.postUrn })
+      }
+
+      const cannon = confetti.create(canvas.current as HTMLCanvasElement, {
+        resize: true
+      });
+
+      cannon({
+        particleCount: 500,
+        spread: 360,
+        zIndex: 999
+      });
+
       urlRef.current = result.postUrn
       successRef.current = true
     }

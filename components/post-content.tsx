@@ -34,14 +34,14 @@ export function PostContent({
   const pathname = usePathname();
 
   const createPost = useMutation(api.posts.createPost)
-  const updatePostByUUID = useMutation(api.posts.updatePost)
+  const updatePost = useMutation(api.posts.updatePost)
 
   const handleSavePost = async () => {
     setIsLoading(true)
     submittedContent.current = editText
 
     if (submittedContent.current === editText && postId) {
-      await updatePostByUUID({ content: editText ?? text, postId })
+      await updatePost({ content: editText ?? text, postId, status: 'draft' })
       toast.success('Post guardado')
       setIsLoading(false)
       return
@@ -126,25 +126,45 @@ export function PostContent({
           </TooltipContent>
         </Tooltip>
 
-        <Tooltip delayDuration={0}>
-          <PostEditDrawer
-            text={editText ?? text}
-            disableSave={(!hasChanges && Boolean(postId))}
-            onEditText={setEditText}
-            onSavePost={handleSavePost}
-          >
+        {isSignedIn ? (
+          <Tooltip delayDuration={0}>
+            <PostEditDrawer
+              postId={postId}
+              text={editText ?? text}
+              disableSave={(!hasChanges && Boolean(postId))}
+              onEditText={setEditText}
+              onSavePost={handleSavePost}
+            >
+              <TooltipTrigger asChild>
+                <Button size='sm' className="size-9 p-0 w-full">
+                  <IconEdit size={20} />
+                </Button>
+              </TooltipTrigger>
+            </PostEditDrawer>
+            <TooltipContent
+              className="text-xs flex items-center gap-4"
+            >
+              Editar post
+            </TooltipContent>
+          </Tooltip>
+        ) : (
+          <Tooltip delayDuration={0}>
             <TooltipTrigger asChild>
-              <Button size='sm' className="size-9 p-0 w-full">
+              <Button
+                size='sm'
+                className="size-9 p-0 w-full"
+                onClick={() => clerk.openSignIn({ redirectUrl: pathname })}
+              >
                 <IconEdit size={20} />
               </Button>
             </TooltipTrigger>
-          </PostEditDrawer>
-          <TooltipContent
-            className="text-xs flex items-center gap-4"
-          >
-            Editar post
-          </TooltipContent>
-        </Tooltip>
+            <TooltipContent
+              className="text-xs flex items-center gap-4"
+            >
+              Editar post
+            </TooltipContent>
+          </Tooltip>
+        )}
       </footer>
     </div>
   )
