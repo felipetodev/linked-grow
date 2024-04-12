@@ -50,7 +50,7 @@ async function submitUserMessage(state: PostGenerator) {
   let textStream: undefined | ReturnType<typeof createStreamableValue<string>>
   let textNode: undefined | React.ReactNode
 
-  console.log(state)
+  console.log(aiState.get().messages)
 
   const ui = render({
     model: 'gpt-3.5-turbo',
@@ -107,23 +107,23 @@ async function submitUserMessage(state: PostGenerator) {
 
           await new Promise((resolve) => setTimeout(resolve, 1000))
 
-          aiState.done({
-            ...aiState.get(),
-            messages: [
-              ...aiState.get().messages,
-              {
-                id: crypto.randomUUID(),
-                role: 'function',
-                name: 'listIdeas',
-                content: JSON.stringify(idea)
-              }
-            ]
-          })
+          // aiState.done({
+          //   ...aiState.get(),
+          //   messages: [
+          //     ...aiState.get().messages,
+          //     {
+          //       id: crypto.randomUUID(),
+          //       role: 'function',
+          //       name: 'listIdeas',
+          //       content: JSON.stringify(idea)
+          //     }
+          //   ]
+          // })
 
-          console.log(idea)
-
-          // sanitize the message (improve this)
-          const messageIdeas = idea.message.split('\n')
+          const messageIdeas = idea.message
+            .split('\n')
+            .filter(Boolean)
+            .map(idea => ({ message: idea, id: crypto.randomUUID() }))
 
           return <CardsIdeas ideas={messageIdeas} />
         }
