@@ -94,9 +94,29 @@ function LinkedInCelebrateIcon(props: React.SVGProps<SVGSVGElement>) {
   )
 }
 
+function HeaderDivider() {
+  return (
+    <svg
+      className="hidden h-8 w-8 text-gray-200 dark:text-[#333] sm:mx-3 sm:block"
+      fill="none"
+      shapeRendering="geometricPrecision"
+      stroke="currentColor"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      strokeWidth="1"
+      viewBox="0 0 24 24"
+      width="14"
+      height="14"
+    >
+      <path d="M16.88 3.549L7.12 20.451"></path>
+    </svg>
+  )
+}
+
 export {
   AppIcon,
   LinkedInLikeIcon,
   LinkedInLoveIcon,
-  LinkedInCelebrateIcon
+  LinkedInCelebrateIcon,
+  HeaderDivider
 }
