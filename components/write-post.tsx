@@ -1,7 +1,7 @@
 "use client"
 
 import { useEffect, useRef, useState } from "react"
-import { IconSend } from "@tabler/icons-react";
+import { IconEye, IconPencil, IconSend } from "@tabler/icons-react";
 import Editor from "./editor/advanced-editor";
 import { useMutation, useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
@@ -88,8 +88,14 @@ export function WritePost({ postId }: { postId: Id<"posts"> }) {
       {isMobile ? (
         <Tabs defaultValue="editor" className="">
           <TabsList className="grid w-full grid-cols-2">
-            <TabsTrigger value="editor">Editor</TabsTrigger>
-            <TabsTrigger value="preview">Vista previa</TabsTrigger>
+            <TabsTrigger value="editor">
+              <IconPencil size={20} className="mr-2" />
+              Editor
+            </TabsTrigger>
+            <TabsTrigger value="preview">
+              <IconEye size={20} className="mr-2" />
+              Vista previa
+            </TabsTrigger>
           </TabsList>
           <TabsContent value="editor">
             <Editor text={content} onEditText={setContent} />
