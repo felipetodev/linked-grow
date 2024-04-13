@@ -1,5 +1,5 @@
 import { TemplateHeader } from "@/components/template-header";
-import { PostForm } from "../components/post-form";
+import { PostForm } from "@/components/posts/post-form";
 import { TONE_OPTIONS } from "@/lib/constants";
 import { AI } from "@/lib/post/actions";
 

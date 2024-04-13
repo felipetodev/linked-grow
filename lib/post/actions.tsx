@@ -8,7 +8,7 @@ import {
 } from 'ai/rsc'
 import { z } from 'zod'
 import OpenAI from 'openai'
-import { PostContent } from '@/components/post-content'
+import { Post } from '@/components/posts/post-context'
 import { CardsIdeas } from '@/app/ideas/components/cards-ideas'
 import { CardsSkeleton } from '@/app/ideas/components/cards-skeleton'
 import { IconLoader } from '@tabler/icons-react'
@@ -70,7 +70,7 @@ async function submitUserMessage(state: PostGenerator) {
     text: ({ content, done, delta }) => {
       if (!textStream) {
         textStream = createStreamableValue('')
-        textNode = <PostContent content={textStream.value} />
+        textNode = <Post content={textStream.value} />
       }
 
       if (done) {

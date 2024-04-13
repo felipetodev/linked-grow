@@ -1,8 +1,10 @@
 import { useRef } from "react"
 import Image from "next/image"
 import Link from "next/link"
-import { buttonVariants } from "./ui/button"
 import { IconLoader, IconX } from "@tabler/icons-react"
+import { buttonVariants } from "@/components/ui/button"
+import { Textarea } from "@/components/ui/textarea"
+import { Label } from "@/components/ui/label"
 import {
   AlertDialog,
   AlertDialogAction,
@@ -14,8 +16,6 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
-import { Textarea } from "./ui/textarea"
-import { Label } from "./ui/label"
 import { cn } from "@/lib/utils"
 
 const randomId = crypto.randomUUID()
@@ -57,14 +57,14 @@ type Props = {
   urlRef: string
   isSuccess: boolean
   isLoading: boolean
-  onPublish: (comment?: string) => void
   children: React.ReactNode
+  onPublish: (comment?: string) => void
 }
 
 export function PostConfirmModal({
   urlRef,
-  isSuccess,
   isLoading,
+  isSuccess,
   onPublish,
   children
 }: Props) {

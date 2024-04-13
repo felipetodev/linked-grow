@@ -9,7 +9,7 @@ import { Button } from "./ui/button";
 import { useMediaQuery } from "@/lib/hooks/use-media-query";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "./ui/tabs";
 import { LinkedInPreview } from "./linkedin-preview";
-import { PostConfirmModal } from "./post-confirm-modal";
+import { PostConfirmModal } from "./posts/post-confirm-modal";
 import { publishPost } from "@/app/actions/post";
 import { toast } from 'sonner'
 import confetti from "canvas-confetti";

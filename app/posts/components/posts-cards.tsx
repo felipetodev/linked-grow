@@ -1,15 +1,15 @@
 "use client"
 
+import { useEffect } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { Cards } from "./cards"
 import {
   Tabs,
   TabsContent,
   TabsList,
   TabsTrigger,
 } from "@/components/ui/tabs"
-import { Cards } from "./cards"
-import { useRouter, useSearchParams } from "next/navigation";
 import { createUrl } from "@/lib/utils";
-import { useEffect } from "react";
 
 export function PostsCards() {
   const router = useRouter();
