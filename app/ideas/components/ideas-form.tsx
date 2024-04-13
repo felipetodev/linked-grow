@@ -1,35 +1,19 @@
 "use client"
 
-import { useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label, labelVariants } from "@/components/ui/label";
 import { cn } from "@/lib/utils";
 import { IconSparkles } from "@tabler/icons-react";
-import { useActions, useUIState } from "ai/rsc";
-import { AI } from "@/lib/post/actions";
+import { useIdeas } from "./ideas-context";
 
 export function IdeasForm() {
-  const { submitUserMessage } = useActions()
-  const [messages, setMessages] = useUIState<typeof AI>()
-  const inputRef = useRef<HTMLInputElement>(null)
+  const { messages, inputRef, onSubmit } = useIdeas()
 
   return (
     <div className="grid md:grid-cols-2 gap-8">
       <form
-        onSubmit={async (e) => {
-          e.preventDefault()
-
-          try {
-            const message = inputRef.current?.value
-
-            if (!message) return alert('Debes ingresar un mensaje')
-            const responseMessage = await submitUserMessage({ message, type: 'ideas' })
-            setMessages([responseMessage])
-          } catch (error) {
-            console.error(error)
-          }
-        }}
+        onSubmit={onSubmit}
         className="flex flex-col w-full gap-y-4"
       >
         <Label htmlFor="ideas" className="font-semibold">

@@ -1,10 +1,14 @@
+"use client"
+
 import Link from "next/link"
 import { Button, buttonVariants } from "@/components/ui/button"
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip"
 import { IconBookmark, IconSparkles } from "@tabler/icons-react"
+import { useIdeas } from "./ideas-context"
 import { cn } from "@/lib/utils"
 
 export function CardsIdeas({ ideas }: { ideas: { message: string, id: string }[] }) {
+  const { savedIdeas, onSaveIdea } = useIdeas()
   return (
     <div className="grid sm:grid-cols-2 gap-6">
       {ideas.map(({ message, id }) => (
@@ -29,7 +33,14 @@ export function CardsIdeas({ ideas }: { ideas: { message: string, id: string }[]
             </Tooltip>
             <Tooltip delayDuration={0}>
               <TooltipTrigger asChild>
-                <Button size='sm' className="size-9 p-0 w-full">
+                <Button
+                  size='sm'
+                  className={cn("size-9 p-0 w-full", {
+                    "bg-green-600 text-white disabled:opacity-100": savedIdeas.some((idea) => idea.id === id),
+                  })}
+                  disabled={savedIdeas.some((idea) => idea.id === id)}
+                  onClick={() => onSaveIdea({ message, id })}
+                >
                   <IconBookmark size={20} />
                 </Button>
               </TooltipTrigger>

@@ -13,4 +13,9 @@ export default defineSchema({
       v.literal("published")
     ),
   }),
+  ideas: defineTable({
+    author: v.string(),
+    content: v.string(),
+    userId: v.string(),
+  })
 });

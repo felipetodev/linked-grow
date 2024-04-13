@@ -23,7 +23,7 @@ export function TemplateHeader({ title, description }: Props) {
         <h2 className="text-4xl font-semibold">
           {title}
         </h2>
-        {status && (
+        {(status === "draft" || status === "published") && (
           <span className="flex items-center text-sm font-semibold text-foreground/50">
             ({status === "draft" ? "Borradores" : "Publicados"})
             {status === "draft"

@@ -26,7 +26,7 @@ export function PostsCards() {
 
   return (
     <Tabs
-      defaultValue="draft"
+      defaultValue={searchParams.get("status") || "draft"}
       onValueChange={value => {
         const params = new URLSearchParams(searchParams.toString());
         params.set("status", value);

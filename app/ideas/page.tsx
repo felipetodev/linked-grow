@@ -1,6 +1,6 @@
 import { TemplateHeader } from "@/components/template-header";
-import { IdeasForm } from "./components/ideas-form";
 import { AI } from "@/lib/post/actions";
+import { IdeasTabs } from "./components/ideas-context";
 
 export default function IdeasPage() {
   return (
@@ -9,7 +9,7 @@ export default function IdeasPage() {
         title="Genera ideas con IA"
         description="Genera ideas para tus posts de LinkedIn"
       />
-      <IdeasForm />
+      <IdeasTabs />
     </AI>
   )
 }
