@@ -50,7 +50,7 @@ const IdeasTabs = React.forwardRef<
   React.useEffect(() => {
     if (!searchParams.get("status")) {
       const params = new URLSearchParams(searchParams.toString());
-      params.set("status", "generated");
+      params.set("status", "generate");
 
       router.push(createUrl('/ideas', params));
     }
@@ -91,7 +91,7 @@ const IdeasTabs = React.forwardRef<
     >
       <Tabs
         ref={ref}
-        defaultValue={searchParams.get("status") || "generated"}
+        defaultValue={searchParams.get("status") || "generate"}
         onValueChange={value => {
           const params = new URLSearchParams(searchParams.toString());
           params.set("status", value);
@@ -100,7 +100,7 @@ const IdeasTabs = React.forwardRef<
         }}
       >
         <TabsList className="mb-4">
-          <TabsTrigger value="generated">Borradores</TabsTrigger>
+          <TabsTrigger className="min-w-28" value="generate">Generar</TabsTrigger>
           <TabsTrigger value="saved">
             Publicados
             {ideas?.length! > 0 && (
@@ -110,7 +110,7 @@ const IdeasTabs = React.forwardRef<
             )}
           </TabsTrigger>
         </TabsList>
-        <TabsContent value="generated">
+        <TabsContent value="generate">
           <IdeasForm />
         </TabsContent>
         <TabsContent value="saved">
