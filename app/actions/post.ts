@@ -72,7 +72,7 @@ export async function publishPost({ text, comment }: { text: string, comment?: s
     provider
   );
 
-  const accessToken = clerkResponse[0].token;
+  const accessToken = clerkResponse[0]?.token;
 
   const user = await currentUser() ?? undefined;
 
@@ -80,7 +80,7 @@ export async function publishPost({ text, comment }: { text: string, comment?: s
 
   if (!accessToken || !externalId) {
     return {
-      error: "Unauthorized"
+      error: "Unauthorized or missing LinkedIn account"
     }
   }
 

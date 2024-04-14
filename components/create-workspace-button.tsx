@@ -43,7 +43,7 @@ export function CreateWorkspaceButton({ membership }: { membership: any }) {
     console.log("Create workspace")
   }
 
-  if (!user?.fullName) return (
+  if (!user) return (
     <Skeleton className="w-[200px] h-[40px]" />
   )
 
