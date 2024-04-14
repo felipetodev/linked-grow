@@ -4,6 +4,7 @@ import { MemoizedReactMarkdown } from "@/components/ui/markdown"
 import TimeAgo from "@/lib/hooks/use-time-ago"
 import { CardFooterDraft } from "./card-footer-draft"
 import { CardFooterPublished } from "./card-footer-published"
+import { PostCardMoreOptions } from "./post-card-more-options"
 import { IconLoader } from "@tabler/icons-react"
 import { useMutation } from "convex/react"
 import { api } from "@/convex/_generated/api"
@@ -87,6 +88,9 @@ export function PostCard({
           <span className="text-sm font-medium">Por favor, espere...</span>
           <IconLoader className="animate-spin size-8 mt-4" />
         </div>
+      )}
+      {status === 'published' && (
+        <PostCardMoreOptions postUrn={postUrn} />
       )}
     </div>
   )
