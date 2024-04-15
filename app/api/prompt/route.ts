@@ -6,7 +6,7 @@ import type { NextApiRequest } from "next";
 const { CLERK_OAUTH_PROVIDER = "" } = process.env
 
 export async function GET(req: NextApiRequest) {
-  const { userId } = getAuth(req);
+  const { userId, orgId } = getAuth(req);
 
   if (!userId || !CLERK_OAUTH_PROVIDER) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -14,15 +14,26 @@ export async function GET(req: NextApiRequest) {
 
   const provider = CLERK_OAUTH_PROVIDER as `oauth_${OAuthProvider}`
 
-  // const name = 'default';
-  // const organization = await clerkClient.organizations.createOrganization({ name, createdBy: userId });
+  const memberships = await clerkClient.organizations.getOrganizationMembershipList({ organizationId: orgId! });
 
   const clerkResponse = await clerkClient.users.getUserOauthAccessToken(
-    userId,
+    memberships[0].publicUserData?.userId as string,
     provider
   );
 
   const accessToken = clerkResponse[0].token;
+
+  return NextResponse.json({ memberships, accessToken });
+
+  // const name = 'default';
+  // const organization = await clerkClient.organizations.createOrganization({ name, createdBy: userId });
+
+  // const clerkResponse = await clerkClient.users.getUserOauthAccessToken(
+  //   userId,
+  //   provider
+  // );
+
+  // const accessToken = clerkResponse[0].token;
 
   if (!accessToken) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });

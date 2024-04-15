@@ -1,8 +1,9 @@
 import { authMiddleware } from "@clerk/nextjs";
  
 export default authMiddleware({
-  publicRoutes: ["/", "/ideas", "/templates/:id"],
+  publicRoutes: ["/"],
   // debug: process.env.NODE_ENV === "development"
+  // afterAuth(auth, req) {}
 });
  
 export const config = {

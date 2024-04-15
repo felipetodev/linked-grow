@@ -75,6 +75,7 @@ const IdeasTabs = React.forwardRef<
       setSavedIdeas([...savedIdeas, { id }])
       toast.success("Idea guardada")
     } catch (error) {
+      // user does not exist (check if user is logged in)
       toast.error("Error al guardar post idea")
     }
   }
