@@ -9,7 +9,7 @@ export function Cards({ status }: { status: "draft" | "published" }) {
   if (!posts) return <CardsSkeleton repeat={6} />
 
   return (
-    <div className="grid gap-4 grid-cols-[repeat(auto-fill,_minmax(300px,1fr))]">
+    <div className="grid gap-4 grid-cols-[repeat(auto-fill,_minmax(300px,1fr))] mb-6">
       {posts.length > 0 ? posts.map(post => (
         <PostCard key={post._id} {...post} />
       )) : (

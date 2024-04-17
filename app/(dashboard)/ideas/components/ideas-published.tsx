@@ -12,7 +12,7 @@ type Props = {
 
 export function IdeasPublished({ ideas, onDelete }: Props) {
   return (
-    <div className="grid gap-4 grid-cols-[repeat(auto-fill,_minmax(250px,300px))]">
+    <div className="grid gap-4 grid-cols-[repeat(auto-fill,_minmax(250px,1fr))] mb-6">
       {ideas?.map(({ content, _id: id, _creationTime: createdAt }) => (
         <div key={id} className="grid gap-y-4 rounded border p-2 shadow-lg transition duration-300 hover:-translate-y-2 hover:shadow-xl">
           <header>
