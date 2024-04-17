@@ -28,7 +28,6 @@ export function PostCard({
   updatedAt,
 }: Doc<"posts">) {
   const [isLoading, setIsLoading] = useState(false)
-  const [isVideo, setIsVideo] = useState(false)
   const contentLength = content.length
   const content_ = contentLength > maxChars ? content.slice(0, maxChars) + '...' : content
   const router = useRouter()
@@ -37,7 +36,7 @@ export function PostCard({
 
   const handleCreatePostCopy = async () => {
     setIsLoading(true)
-    const postId = await createPost({ content, fileId, status: 'draft' })
+    const postId = await createPost({ content, fileId, status: 'draft', fileType })
 
     toast.success('Post copiado como borrador')
     router.push(`/new/${postId}`)
