@@ -12,11 +12,11 @@ import {
 } from "@/components/ui/alert-dialog"
 import { Button, buttonVariants } from "@/components/ui/button"
 import { IconEdit, IconTrash } from "@tabler/icons-react"
-import { type Id } from "@/convex/_generated/dataModel"
-import { cn } from "@/lib/utils"
 import { toast } from "sonner"
 import { useMutation } from "convex/react"
 import { api } from "@/convex/_generated/api"
+import { cn } from "@/lib/utils"
+import { type Id } from "@/convex/_generated/dataModel"
 
 export function CardFooterDraft({ postId }: { postId: Id<"posts"> }) {
   const deletePost = useMutation(api.posts.deletePost)
