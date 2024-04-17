@@ -1,34 +1,47 @@
 import { useState } from "react"
+import Image from "next/image";
 import {
   IconMessage,
-  IconPhoto,
   IconRepeat,
   IconSend,
   IconThumbUp,
-  IconWorld
+  IconWorld,
+  IconX
 } from "@tabler/icons-react";
 import {
   LinkedInCelebrateIcon,
   LinkedInLikeIcon,
   LinkedInLoveIcon
-} from "./ui/icons";
-import { MemoizedReactMarkdown } from "./ui/markdown";
-import { Separator } from "./ui/separator";
+} from "@/components/ui/icons";
+import { PostUserAvatar } from "@/app/(dashboard)/posts/components/post-user-avatar";
+import { MemoizedReactMarkdown } from "@/components/ui/markdown";
+import { useFileUpload } from "@/components/upload-files-context";
+import { Separator } from "@/components/ui/separator";
+import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { type Id } from "@/convex/_generated/dataModel";
 
-export function LinkedInPreview({ author, content }: { author?: string, content: string }) {
+type Props = {
+  content: string
+  author?: string,
+  fileId?: Id<"_storage">,
+  isPublished?: boolean
+}
+
+const randomLikes = Math.floor(Math.random() * 100)
+
+export function LinkedInPreview({ author, fileId, content, isPublished }: Props) {
   const [isOpen, setIsOpen] = useState(false)
+  const { file, draftImg, onSetDraftImg, onFileSelected, onSetFiles } = useFileUpload()
 
   const maxChars = 320
   const truncatedContent = isOpen ? content : content.slice(0, maxChars) + '...'
 
   return (
-    <div className="rounded-xl bg-white text-black py-5 px-6 max-w-xl h-fit">
-      <header className="mb-3">
+    <div className="rounded-xl bg-white text-black py-5 max-w-xl h-fit">
+      <header className="mb-3 px-4">
         <div className="flex items-center">
-          <div className="grid place-items-center h-12 w-12 rounded-full bg-[#f2f4f7]">
-            <IconPhoto className="text-gray-400" size={20} />
-          </div>
+          <PostUserAvatar />
           <div className="ml-2 flex-1 overflow-hidden px-1">
             <div className="font-semibold text-sm">
               {author ?? "User"}
@@ -42,7 +55,7 @@ export function LinkedInPreview({ author, content }: { author?: string, content:
         </div>
       </header>
       <div
-        className={cn("relative", {
+        className={cn("relative px-4", {
           "pb-2": !isOpen,
           "pb-8": isOpen,
         })}
@@ -51,6 +64,22 @@ export function LinkedInPreview({ author, content }: { author?: string, content:
           className="text-sm prose break-words prose-pre:p-0"
           components={{
             p({ children }) {
+              if (children?.toString().includes("#")) {
+                // bold hashtag word like linkedin. eg: <span>#hashtag</span>
+                for (const word of children.toString().split(" ")) {
+                  if (word.startsWith("#")) {
+                    const index = children.toString().indexOf(word)
+                    const before = children.toString().slice(0, index)
+                    const after = children.toString().slice(index)
+                    return (
+                      <p className="mb-1 last:mb-0">
+                        {before}{" "}
+                        <span className="text-linkedin font-semibold">{after}</span>
+                      </p>
+                    )
+                  }
+                }
+              }
               return <p className="mb-1 last:mb-0">{children}</p>
             }
           }}
@@ -59,23 +88,64 @@ export function LinkedInPreview({ author, content }: { author?: string, content:
         </MemoizedReactMarkdown>
         <button
           onClick={() => setIsOpen(!isOpen)}
-          className="absolute right-0 bottom-0 text-sm opacity-60 font-medium hover:opacity-100 hover:text-[#0b66c2] hover:underline"
+          className="absolute px-4 right-0 bottom-0 text-sm opacity-60 font-medium hover:opacity-100 hover:text-[#0b66c2] hover:underline"
         >
           {isOpen ? "...ver menos" : "...ver más"}
         </button>
       </div>
-      <footer className="mt-3">
+      {file && (
+        <div className="relative mt-4">
+          <Image
+            src={URL.createObjectURL(file)}
+            alt="file"
+            width={0}
+            height={500}
+            className="size-full max-h-[500px] object-contain"
+          />
+          {!isPublished && (
+            <Button
+              onClick={() => {
+                onSetFiles([])
+                onFileSelected(null)
+              }}
+              variant="secondary"
+              className="flex items-center absolute top-2 right-4 p-2 h-8 text-purple-500 font-semibold"
+            >
+              Delete image <IconX className="ml-1.5 size-4" />
+            </Button>
+          )}
+        </div>
+      )}
+      {(!file && draftImg) && (
+        <div className="relative mt-4">
+          <img
+            src={draftImg}
+            alt="file"
+            className="size-full max-h-[500px] object-contain"
+          />
+          {!isPublished && (
+            <Button
+              onClick={() => onSetDraftImg(null, fileId)}
+              variant="secondary"
+              className="flex items-center absolute top-2 right-4 p-2 h-8 text-purple-500 font-semibold"
+            >
+              Delete image <IconX className="ml-1.5 size-4" />
+            </Button>
+          )}
+        </div>
+      )}
+      <footer className="mt-3 px-4">
         <div className="flex items-center">
           <LinkedInLikeIcon />
           <LinkedInLoveIcon className="-translate-x-1" />
           <LinkedInCelebrateIcon className="-translate-x-2" />
           <span className="text-xs opacity-60 font-medium">
-            60
+            {randomLikes}
           </span>
           <div className="flex ml-auto text-xs opacity-60 font-medium">
-            <span>3 comentarios</span>
+            <span>6 comentarios</span>
             <span className="block mx-1" aria-label="hidden">•</span>
-            <span>1 resposteo</span>
+            <span>2 resposteo</span>
           </div>
         </div>
         <Separator className="bg-neutral-500/50 my-2" />
