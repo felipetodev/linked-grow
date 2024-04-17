@@ -25,12 +25,13 @@ type Props = {
   content: string
   author?: string,
   fileId?: Id<"_storage">,
+  fileType?: string,
   isPublished?: boolean
 }
 
 const randomLikes = Math.floor(Math.random() * 100)
 
-export function LinkedInPreview({ author, fileId, content, isPublished }: Props) {
+export function LinkedInPreview({ author, fileId, content, fileType, isPublished }: Props) {
   const [isOpen, setIsOpen] = useState(false)
   const { file, draftImg, onSetDraftImg, onFileSelected, onSetFiles } = useFileUpload()
 
@@ -93,7 +94,16 @@ export function LinkedInPreview({ author, fileId, content, isPublished }: Props)
           {isOpen ? "...ver menos" : "...ver más"}
         </button>
       </div>
-      {file && (
+      {file && file.type.includes("video") && (
+        <div className="relative mt-4">
+          <video
+            controls
+            src={URL.createObjectURL(file)}
+            className="size-full max-h-[500px] object-contain"
+          />
+        </div>
+      )}
+      {file && file.type.includes("image") && (
         <div className="relative mt-4">
           <Image
             src={URL.createObjectURL(file)}
@@ -116,7 +126,7 @@ export function LinkedInPreview({ author, fileId, content, isPublished }: Props)
           )}
         </div>
       )}
-      {(!file && draftImg) && (
+      {(!file && draftImg && fileType?.includes("image")) && (
         <div className="relative mt-4">
           <img
             src={draftImg}
@@ -133,6 +143,25 @@ export function LinkedInPreview({ author, fileId, content, isPublished }: Props)
             </Button>
           )}
         </div>
+      )}
+      {(!file && draftImg && fileType?.includes("video")) && (
+        <div className="relative mt-4">
+          <video
+            controls
+            src={draftImg}
+            className="size-full max-h-[500px] object-contain"
+          />
+          {!isPublished && (
+            <Button
+              onClick={() => onSetDraftImg(null, fileId)}
+              variant="secondary"
+              className="flex items-center absolute top-2 right-4 p-2 h-8 text-purple-500 font-semibold"
+            >
+              Delete video <IconX className="ml-1.5 size-4" />
+            </Button>
+          )}
+        </div>
+
       )}
       <footer className="mt-3 px-4">
         <div className="flex items-center">

@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 import { useState } from "react"
 import { useRouter } from "next/navigation"
 import { MemoizedReactMarkdown } from "@/components/ui/markdown"
@@ -21,11 +22,13 @@ export function PostCard({
   status,
   author,
   postUrn,
-  imgFileUrl,
-  imgFileId,
+  fileUrl,
+  fileId,
+  fileType,
   updatedAt,
 }: Doc<"posts">) {
   const [isLoading, setIsLoading] = useState(false)
+  const [isVideo, setIsVideo] = useState(false)
   const contentLength = content.length
   const content_ = contentLength > maxChars ? content.slice(0, maxChars) + '...' : content
   const router = useRouter()
@@ -34,7 +37,7 @@ export function PostCard({
 
   const handleCreatePostCopy = async () => {
     setIsLoading(true)
-    const postId = await createPost({ content, imgFileId, status: 'draft' })
+    const postId = await createPost({ content, fileId, status: 'draft' })
 
     toast.success('Post copiado como borrador')
     router.push(`/new/${postId}`)
@@ -42,7 +45,7 @@ export function PostCard({
 
   return (
     <div className={cn("relative grid border h-max p-4 rounded shadow-lg transition duration-300 hover:-translate-y-2 hover:shadow-xl", {
-      'h-[400px] max-h-[400px]': !imgFileUrl
+      'h-[400px] max-h-[400px]': !fileUrl
     })}>
       <div className="flex items-center mb-4">
         <PostUserAvatar />
@@ -70,13 +73,24 @@ export function PostCard({
       >
         {content_}
       </MemoizedReactMarkdown>
-      {imgFileUrl && (
+      {(fileUrl && fileType?.includes("image")) && (
         <div className="my-4">
           <img
-            src={imgFileUrl}
+            src={fileUrl}
             alt="file"
             className="size-full max-h-[350px] object-contain"
           />
+        </div>
+      )}
+      {(fileUrl && fileType?.includes("video")) && (
+        <div className="my-4">
+          <video
+            controls
+            className="size-full max-h-[350px] object-contain"
+          >
+            <source src={fileUrl} type="video/mp4" />
+            Your browser does not support the video tag.
+          </video>
         </div>
       )}
       {status === 'draft' && <CardFooterDraft postId={postId} />}

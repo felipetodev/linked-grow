@@ -44,7 +44,7 @@ const FileUploadProvider = ({ children }: { children: React.ReactNode }) => {
     setDraftImg(url)
 
     if (!url && fileId) {
-      await deleteFile({ imgFileId: fileId, postId })
+      await deleteFile({ fileId, postId })
     }
   }
 
@@ -58,7 +58,7 @@ const FileUploadProvider = ({ children }: { children: React.ReactNode }) => {
     deletePreview: boolean
   }) => {
     deletePreview && setFile(null)
-    await deleteFile({ imgFileId: fileId, postId })
+    await deleteFile({ fileId, postId })
   }
 
   return (

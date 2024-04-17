@@ -61,10 +61,10 @@ const WritePost = ({ postId }: { postId: Id<"posts"> }) => {
   }, [post])
 
   React.useEffect(() => {
-    if (post?.imgFileUrl) {
-      onSetDraftImg(post.imgFileUrl)
+    if (post?.fileUrl) {
+      onSetDraftImg(post.fileUrl)
     }
-  }, [post?.imgFileUrl])
+  }, [post?.fileUrl])
 
   if (!content) {
     // add skeleton loader
@@ -106,7 +106,14 @@ const WritePost = ({ postId }: { postId: Id<"posts"> }) => {
     }
 
     if (result.postUrn) {
-      await updatePost({ postId, content, status: "published", postUrn: result.postUrn, imgFileId: fileId })
+      await updatePost({
+        postId,
+        content,
+        status: "published",
+        postUrn: result.postUrn,
+        fileId,
+        fileType: file?.type
+      })
 
       const cannon = confetti.create(canvas.current as HTMLCanvasElement, {
         resize: true
@@ -133,9 +140,9 @@ const WritePost = ({ postId }: { postId: Id<"posts"> }) => {
 
     try {
       if (file && !draftImg) {
-        const imgFileId = await getConvexStorageId(file)
+        const fileId = await getConvexStorageId(file)
 
-        await updatePost({ postId, content, status: "draft", imgFileId })
+        await updatePost({ postId, content, status: "draft", fileId, fileType: file.type })
       } else {
         await updatePost({ postId, content, status: "draft" })
       }
@@ -180,7 +187,8 @@ const WritePost = ({ postId }: { postId: Id<"posts"> }) => {
               <LinkedInPreview
                 content={content}
                 author={post?.author}
-                fileId={post?.imgFileId}
+                fileId={post?.fileId}
+                fileType={post?.fileType}
                 isPublished={post?.status === "published"}
               />
             </div>
@@ -195,7 +203,8 @@ const WritePost = ({ postId }: { postId: Id<"posts"> }) => {
             <LinkedInPreview
               content={content}
               author={post?.author}
-              fileId={post?.imgFileId}
+              fileId={post?.fileId}
+              fileType={post?.fileType}
               isPublished={post?.status === "published"}
             />
           </div>

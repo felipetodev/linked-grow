@@ -14,11 +14,20 @@ import { FilePond, registerPlugin } from 'react-filepond'
 
 import "filepond/dist/filepond.min.css";
 
+// @ts-ignore
+import FilePondPluginMediaPreview from "filepond-plugin-media-preview";
+import FilePondPluginFileValidateType from "filepond-plugin-file-validate-type";
 import FilePondPluginImageExifOrientation from "filepond-plugin-image-exif-orientation";
 import FilePondPluginImagePreview from "filepond-plugin-image-preview";
 import "filepond-plugin-image-preview/dist/filepond-plugin-image-preview.css";
+import 'filepond-plugin-media-preview/dist/filepond-plugin-media-preview.min.css';
 
-registerPlugin(FilePondPluginImageExifOrientation, FilePondPluginImagePreview);
+registerPlugin(
+  FilePondPluginImageExifOrientation,
+  FilePondPluginFileValidateType,
+  FilePondPluginImagePreview,
+  FilePondPluginMediaPreview
+);
 
 const label = `
 Arrastra y suelta tu imagen o <span class="filepond--label-action">Buscar</span>
@@ -49,7 +58,7 @@ export function HeaderFileUpload() {
             files={files}
             onupdatefiles={onSetFiles}
             onremovefile={() => onFileSelected(null)}
-            acceptedFileTypes={['image/*']}
+            acceptedFileTypes={["image/png, image/jpeg, image/gif", "video/mp4"]}
             allowMultiple={false}
             imagePreviewMaxHeight={400}
             name="files"

@@ -98,14 +98,25 @@ const Post = React.forwardRef<
     }
 
     if (submittedContent.current === editText && postId) {
-      await updatePost({ content: editText ?? text, postId, status: 'draft', imgFileId: fileIdRef.current })
+      await updatePost({
+        content: editText ?? text,
+        postId,
+        status: 'draft',
+        fileId: fileIdRef.current,
+        fileType: file?.type
+      })
       toast.success('Post guardado')
       setIsLoading(false)
       return
     }
 
     try {
-      const postId = await createPost({ content: editText ?? text, status: 'draft', imgFileId: fileIdRef.current })
+      const postId = await createPost({
+        content: editText ?? text,
+        status: 'draft',
+        fileId: fileIdRef.current,
+        fileType: file?.type
+      })
       toast.success('Post guardado')
       setPostId(postId)
     } catch {
@@ -151,9 +162,22 @@ const Post = React.forwardRef<
 
     if (result.postUrn) {
       if (postId) {
-        await updatePost({ postId, content: text, status: "published", postUrn: result.postUrn, imgFileId: fileIdRef.current })
+        await updatePost({
+          postId,
+          content: editText ?? text,
+          status: "published",
+          postUrn: result.postUrn,
+          fileId: fileIdRef.current,
+          fileType: file?.type
+        })
       } else {
-        await createPost({ content: text, status: "published", postUrn: result.postUrn, imgFileId: fileIdRef.current })
+        await createPost({
+          content: editText ?? text,
+          status: "published",
+          postUrn: result.postUrn,
+          fileId: fileIdRef.current,
+          fileType: file?.type
+        })
       }
 
       const cannon = confetti.create(canvas.current as HTMLCanvasElement, {
@@ -212,7 +236,7 @@ const Post = React.forwardRef<
             {editText ?? text}
           </MemoizedReactMarkdown>
         </div>
-        {file && (
+        {(file?.type.includes("image")) && (
           <Image
             src={URL.createObjectURL(file)}
             alt="file"
@@ -220,6 +244,15 @@ const Post = React.forwardRef<
             height={500}
             className="size-full max-h-[500px] object-contain"
           />
+        )}
+        {file?.type.includes("video") && (
+          <video
+            controls
+            className="size-full max-h-[500px] object-contain"
+          >
+            <source src={URL.createObjectURL(file)} type={file.type} />
+            Your browser does not support the video tag.
+          </video>
         )}
         <PostActions />
       </div>
