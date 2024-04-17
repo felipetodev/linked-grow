@@ -10,7 +10,8 @@ export const createPost = mutation({
       v.literal("published")
     ),
     postUrn: v.optional(v.string()), // fix schema
-    imgFileId: v.optional(v.id('_storage'))
+    fileId: v.optional(v.id('_storage')),
+    fileType: v.optional(v.string())
   },
   handler: async (ctx, args) => {
     const user = await getUser(ctx);
@@ -23,8 +24,8 @@ export const createPost = mutation({
     const currentTimeMillis = currentDate.getTime();
 
     let url: string | null = null
-    if (args.imgFileId) {
-      url = await ctx.storage.getUrl(args.imgFileId)
+    if (args.fileId) {
+      url = await ctx.storage.getUrl(args.fileId)
     }
 
     return await ctx.db.insert("posts", {
@@ -34,8 +35,8 @@ export const createPost = mutation({
       author: user?.name ?? "Unknown User",
       userId: user.subject,
       updatedAt: currentTimeMillis,
-      imgFileId: args.imgFileId,
-      ...url && { imgFileUrl: url },
+      fileId: args.fileId,
+      ...url && { fileUrl: url, fileType: args.fileType },
     })
   }
 })
@@ -86,7 +87,8 @@ export const updatePost = mutation({
       v.literal("published")
     ),
     postUrn: v.optional(v.string()), // fix schema
-    imgFileId: v.optional(v.id('_storage'))
+    fileId: v.optional(v.id('_storage')),
+    fileType: v.optional(v.string())
   },
   handler: async (ctx, args) => {
     const user = await getUser(ctx);
@@ -99,8 +101,8 @@ export const updatePost = mutation({
     const currentTimeMillis = currentDate.getTime();
 
     let url: string | null = null
-    if (args.imgFileId) {
-      url = await ctx.storage.getUrl(args.imgFileId)
+    if (args.fileId) {
+      url = await ctx.storage.getUrl(args.fileId)
     }
 
     await ctx.db.patch(args.postId, {
@@ -110,8 +112,9 @@ export const updatePost = mutation({
       postUrn: args.postUrn,
       updatedAt: currentTimeMillis,
       ...url && {
-        imgFileId: args.imgFileId,
-        imgFileUrl: url
+        fileType: args.fileType,
+        fileId: args.fileId,
+        fileUrl: url
       },
     })
   }
@@ -135,13 +138,14 @@ export const deletePost = mutation({
 export const deleteFile = mutation({
   args: {
     postId: v.id("posts"),
-    imgFileId: v.id('_storage')
+    fileId: v.id('_storage')
   },
   handler: async (ctx, args) => {
-    await ctx.storage.delete(args.imgFileId)
+    await ctx.storage.delete(args.fileId)
     await ctx.db.patch(args.postId, {
-      imgFileId: undefined,
-      imgFileUrl: undefined
+      fileId: undefined,
+      fileUrl: undefined,
+      fileType: undefined
     })
   }
 })
