@@ -3,7 +3,8 @@ import {
   IconBold,
   IconItalic,
 } from "@tabler/icons-react";
-import { ToggleGroup, ToggleGroupItem } from "../ui/toggle-group";
+import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
+import { HeaderFileUpload } from "./header-file-upload";
 
 type SelectorItem = {
   name: string;
@@ -40,7 +41,7 @@ export function HeaderEditor() {
 
   return (
     <header className="sticky top-0 border-b py-2 mb-4 bg-background z-10 px-4">
-      <div className="flex">
+      <div className="flex items-center">
         <ToggleGroup
           type="multiple"
           value={itemsActiveValues}
@@ -54,11 +55,12 @@ export function HeaderEditor() {
               disabled={item.disabled}
               onClick={() => item.command(editor)}
             >
-              <item.icon className="h-4 w-4" />
+              <item.icon className="size-4" />
             </ToggleGroupItem>
 
           ))}
         </ToggleGroup>
+        <HeaderFileUpload />
       </div>
     </header>
   )

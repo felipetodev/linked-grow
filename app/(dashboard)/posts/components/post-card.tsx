@@ -5,22 +5,15 @@ import TimeAgo from "@/lib/hooks/use-time-ago"
 import { CardFooterDraft } from "./card-footer-draft"
 import { CardFooterPublished } from "./card-footer-published"
 import { PostCardMoreOptions } from "./post-card-more-options"
+import { PostUserAvatar } from "./post-user-avatar"
 import { IconLoader } from "@tabler/icons-react"
 import { useMutation } from "convex/react"
 import { api } from "@/convex/_generated/api"
 import { toast } from "sonner"
-import { type Id } from "@/convex/_generated/dataModel"
+import { cn } from "@/lib/utils"
+import { type Doc } from "@/convex/_generated/dataModel"
 
 const maxChars = 200
-
-type Props = {
-  status: "draft" | "published"
-  content: string
-  author: string
-  _id: Id<"posts">
-  updatedAt: number
-  postUrn?: string
-}
 
 export function PostCard({
   _id: postId,
@@ -28,8 +21,10 @@ export function PostCard({
   status,
   author,
   postUrn,
+  imgFileUrl,
+  imgFileId,
   updatedAt,
-}: Props) {
+}: Doc<"posts">) {
   const [isLoading, setIsLoading] = useState(false)
   const contentLength = content.length
   const content_ = contentLength > maxChars ? content.slice(0, maxChars) + '...' : content
@@ -39,18 +34,18 @@ export function PostCard({
 
   const handleCreatePostCopy = async () => {
     setIsLoading(true)
-    const postId = await createPost({ content, status: 'draft' })
+    const postId = await createPost({ content, imgFileId, status: 'draft' })
 
     toast.success('Post copiado como borrador')
     router.push(`/new/${postId}`)
   }
 
   return (
-    <div className="relative grid border h-[400px] max-h-[400px] p-4 rounded shadow-lg overflow-hidden transition duration-300 hover:-translate-y-2 hover:shadow-xl">
+    <div className={cn("relative grid border h-max p-4 rounded shadow-lg transition duration-300 hover:-translate-y-2 hover:shadow-xl", {
+      'h-[400px] max-h-[400px]': !imgFileUrl
+    })}>
       <div className="flex items-center mb-4">
-        <div className="flex justify-center items-center size-[48px] p-4 border rounded-full bg-background ">
-          {author?.split(' ').map(name => name[0]).join('') ?? 'U'}
-        </div>
+        <PostUserAvatar />
         <div className="ml-2 flex-1 overflow-hidden px-1">
           <div className="font-semibold text-sm">
             {author ?? 'User'}
@@ -75,6 +70,15 @@ export function PostCard({
       >
         {content_}
       </MemoizedReactMarkdown>
+      {imgFileUrl && (
+        <div className="my-4">
+          <img
+            src={imgFileUrl}
+            alt="file"
+            className="size-full max-h-[350px] object-contain"
+          />
+        </div>
+      )}
       {status === 'draft' && <CardFooterDraft postId={postId} />}
       {status === 'published' && (
         <CardFooterPublished

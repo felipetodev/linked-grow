@@ -1,6 +1,6 @@
 import { Suspense } from "react"
 import MembershipSSR from "@/components/memberships-ssr"
-import { WritePost } from "@/components/write-post"
+import { WritePost } from "@/components/write/write-post"
 import { type Id } from "@/convex/_generated/dataModel"
 
 type Props = {

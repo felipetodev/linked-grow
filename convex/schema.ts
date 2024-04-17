@@ -12,6 +12,8 @@ export default defineSchema({
       v.literal("draft"),
       v.literal("published")
     ),
+    imgFileId: v.optional(v.id('_storage')),
+    imgFileUrl: v.optional(v.string())
   }),
   ideas: defineTable({
     author: v.string(),

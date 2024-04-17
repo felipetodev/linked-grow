@@ -57,6 +57,7 @@ type Props = {
   urlRef: string
   isSuccess: boolean
   isLoading: boolean
+  isPublished?: boolean
   children: React.ReactNode
   onPublish: (comment?: string) => void
 }
@@ -65,8 +66,9 @@ export function PostConfirmModal({
   urlRef,
   isLoading,
   isSuccess,
-  onPublish,
-  children
+  isPublished,
+  children,
+  onPublish
 }: Props) {
   const inputText = useRef<HTMLTextAreaElement>(null)
   return (
@@ -75,7 +77,7 @@ export function PostConfirmModal({
         {children}
       </AlertDialogTrigger>
       <AlertDialogContent>
-        {isSuccess ? (
+        {(isSuccess || isPublished) ? (
           <SuccessView urlRef={urlRef} />
         ) : (
           <>

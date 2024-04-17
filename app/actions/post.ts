@@ -26,7 +26,100 @@ async function addComment({ accessToken, externalId, text, postUrn }: { accessTo
   return await res.json()
 }
 
-async function createPost({ accessToken, externalId, text }: { accessToken: string, text: string, externalId: string }) {
+async function uploadImage({
+  accessToken,
+  uploadUrl,
+  file
+}: { accessToken: string, uploadUrl: string, file: FormData }) {
+  try {
+    const fileData = file.get("file") as File
+
+    // transform FormData file to Buffer
+    const file_ = await fileData.arrayBuffer().then((buffer) => new Uint8Array(buffer))
+
+    const imageUploadRes = await fetch(uploadUrl, {
+      method: "PUT",
+      headers: {
+        "Content-Type": `image/${fileData.type}; charset=utf-8`,
+        Authorization: `Bearer ${accessToken}`,
+        'x-amz-acl': 'public-read',
+      },
+      body: file_,
+      redirect: "follow",
+    })
+
+    if (!imageUploadRes.ok) {
+      return null
+    }
+
+    console.info("Image uploaded successfully 🚀")
+    return true // success ✅
+  } catch (e) {
+    console.error("Error uploading image: ", e)
+    return null
+  }
+}
+
+async function registerFile({
+  accessToken,
+  externalId,
+  file
+}: {
+  accessToken: string,
+  externalId: string,
+  file: FormData
+}) {
+  const res = await fetch(`${linkedinUri}/assets?action=registerUpload`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${accessToken}`,
+    },
+    body: JSON.stringify({
+      registerUploadRequest: {
+        owner: `urn:li:person:${externalId}`,
+        recipes: ["urn:li:digitalmediaRecipe:feedshare-image"],
+        serviceRelationships: [
+          {
+            identifier: "urn:li:userGeneratedContent",
+            relationshipType: "OWNER",
+          },
+        ],
+      }
+    })
+  })
+
+  if (!res.ok) {
+    return null
+  }
+
+  const { value } = await res.json();
+  const imageAsset = value.asset;
+
+  const { uploadUrl } = value.uploadMechanism[
+    "com.linkedin.digitalmedia.uploading.MediaUploadHttpRequest"
+  ];
+
+  const uploaded = await uploadImage({ accessToken, uploadUrl, file });
+
+  if (!uploaded || !imageAsset) {
+    return null
+  }
+
+  return imageAsset
+}
+
+async function createPost({
+  accessToken,
+  externalId,
+  text,
+  asset
+}: {
+  accessToken: string,
+  text: string,
+  externalId: string,
+  asset?: string | null
+}) {
   const res = await fetch(`${linkedinUri}/ugcPosts`, {
     method: "POST",
     headers: {
@@ -40,8 +133,21 @@ async function createPost({ accessToken, externalId, text }: { accessToken: stri
       specificContent: {
         "com.linkedin.ugc.ShareContent": {
           shareCommentary: { text },
-          shareMediaCategory: "NONE" // 'NONE' | 'ARTICLE' | 'IMAGE',
-          // media: []
+          shareMediaCategory: asset ? "IMAGE" : "NONE", // 'NONE' | 'ARTICLE' | 'IMAGE',
+          ...asset && ({
+            media: [
+              {
+                status: "READY",
+                media: asset,
+                "title": {
+                  "text": "LinkedIn API v2 Testing share"
+                },
+                "description": {
+                  "text": "LinkedIn API v2 Testing share"
+                },
+              }
+            ]
+          })
         },
       },
       visibility: {
@@ -53,7 +159,7 @@ async function createPost({ accessToken, externalId, text }: { accessToken: stri
   return await res.json();
 }
 
-export async function publishPost({ text, comment }: { text: string, comment?: string }) {
+export async function publishPost({ text, comment, file }: { text: string, comment?: string, file: FormData | null }) {
   const parsedCredentials = z.object({
     text: z.string(),
     comment: z.string().optional(),
@@ -84,10 +190,20 @@ export async function publishPost({ text, comment }: { text: string, comment?: s
     }
   }
 
+  let asset: string | null = null;
+  if (file) {
+    asset = await registerFile({ accessToken, externalId, file });
+  }
+
+  if (file && !asset) {
+    return { error: "Error uploading post with image" }
+  }
+
   const post = await createPost({
     accessToken,
     externalId,
-    text
+    text,
+    asset
   })
 
   if (post.status >= 400) {
