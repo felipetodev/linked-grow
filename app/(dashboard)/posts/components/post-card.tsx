@@ -85,6 +85,7 @@ export function PostCard({
         <div className="my-4">
           <video
             controls
+            muted
             className="size-full max-h-[350px] object-contain"
           >
             <source src={fileUrl} type="video/mp4" />

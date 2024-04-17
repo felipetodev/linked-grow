@@ -248,6 +248,7 @@ const Post = React.forwardRef<
         {file?.type.includes("video") && (
           <video
             controls
+            muted
             className="size-full max-h-[500px] object-contain"
           >
             <source src={URL.createObjectURL(file)} type={file.type} />

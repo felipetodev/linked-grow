@@ -98,6 +98,7 @@ export function LinkedInPreview({ author, fileId, content, fileType, isPublished
         <div className="relative mt-4">
           <video
             controls
+            muted
             src={URL.createObjectURL(file)}
             className="size-full max-h-[500px] object-contain"
           />
