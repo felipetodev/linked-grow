@@ -57,7 +57,7 @@ export default function RootLayout({
                 defaultCollapsed={defaultCollapsed}
                 navCollapsedSize={4}
               >
-                <main className="p-6 flex flex-col">
+                <main className="p-6 flex flex-col h-full">
                   {children}
                 </main>
               </ResizeableLayout>
