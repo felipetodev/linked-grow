@@ -4,6 +4,7 @@ import {
   IconItalic,
 } from "@tabler/icons-react";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
+import { EmojiPicker } from "@/components/emoji-picker";
 import { HeaderFileUpload } from "./header-file-upload";
 
 type SelectorItem = {
@@ -60,6 +61,7 @@ export function HeaderEditor() {
 
           ))}
         </ToggleGroup>
+        <EmojiPicker />
         <HeaderFileUpload />
       </div>
     </header>
