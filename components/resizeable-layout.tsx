@@ -34,14 +34,14 @@ export function Resizeable({
             sizes
           )}`
         }}
-        className="h-full max-h-[800px] items-stretch"
+        className="h-full items-stretch"
       >
         <ResizablePanel
           defaultSize={defaultLayout[0]}
           collapsedSize={navCollapsedSize}
           collapsible={true}
           minSize={15}
-          maxSize={20}
+          maxSize={15}
           onExpand={() => {
             setIsCollapsed(false)
             document.cookie = `react-resizable-panels:collapsed=${JSON.stringify(
@@ -57,7 +57,7 @@ export function Resizeable({
           }}
           className={cn(
             isCollapsed &&
-            "min-w-[50px] transition-all duration-300 ease-in-out"
+            "min-w-[60px] transition-all duration-300 ease-in-out"
           )}
         >
           {/* <div

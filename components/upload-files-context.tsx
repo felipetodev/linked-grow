@@ -4,7 +4,7 @@ import * as React from "react"
 import { useParams } from "next/navigation"
 import { useMutation } from "convex/react"
 import { api } from "@/convex/_generated/api"
-import { Id } from "@/convex/_generated/dataModel"
+import { type Id } from "@/convex/_generated/dataModel"
 
 type FileUploadContextProps = {
   file?: File | null
@@ -61,18 +61,18 @@ const FileUploadProvider = ({ children }: { children: React.ReactNode }) => {
     await deleteFile({ fileId, postId })
   }
 
+  const values = React.useMemo(() => ({
+    file,
+    files,
+    draftImg,
+    onFileSelected,
+    onSetFiles: setFiles,
+    onSetDraftImg: onDeleteFile,
+    onDeletePostFile
+  }), [file, files, draftImg])
+
   return (
-    <FileUploadContext.Provider
-      value={{
-        file,
-        files,
-        draftImg,
-        onFileSelected,
-        onSetFiles: setFiles,
-        onSetDraftImg: onDeleteFile,
-        onDeletePostFile
-      }}
-    >
+    <FileUploadContext.Provider value={values}>
       {children}
     </FileUploadContext.Provider>
   )

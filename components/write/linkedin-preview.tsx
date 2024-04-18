@@ -1,12 +1,10 @@
 import { useState } from "react"
-import Image from "next/image";
 import {
   IconMessage,
   IconRepeat,
   IconSend,
   IconThumbUp,
-  IconWorld,
-  IconX
+  IconWorld
 } from "@tabler/icons-react";
 import {
   LinkedInCelebrateIcon,
@@ -15,9 +13,8 @@ import {
 } from "@/components/ui/icons";
 import { PostUserAvatar } from "@/app/(dashboard)/posts/components/post-user-avatar";
 import { MemoizedReactMarkdown } from "@/components/ui/markdown";
-import { useFileUpload } from "@/components/upload-files-context";
+import { FilePreviewThumbnail } from "./file-preview-thumbnail";
 import { Separator } from "@/components/ui/separator";
-import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { type Id } from "@/convex/_generated/dataModel";
 
@@ -26,20 +23,25 @@ type Props = {
   author?: string,
   fileId?: Id<"_storage">,
   fileType?: string,
-  isPublished?: boolean
+  isPublished: boolean
 }
 
 const randomLikes = Math.floor(Math.random() * 100)
 
-export function LinkedInPreview({ author, fileId, content, fileType, isPublished }: Props) {
+export function LinkedInPreview({
+  author,
+  fileId,
+  content,
+  fileType,
+  isPublished = false
+}: Props) {
   const [isOpen, setIsOpen] = useState(false)
-  const { file, draftImg, onSetDraftImg, onFileSelected, onSetFiles } = useFileUpload()
 
   const maxChars = 320
   const truncatedContent = isOpen ? content : content.slice(0, maxChars) + '...'
 
   return (
-    <div className="rounded-xl bg-white text-black py-5 max-w-xl h-fit">
+    <div className="rounded-xl bg-white text-black py-5 w-full max-w-xl h-fit">
       <header className="mb-3 px-4">
         <div className="flex items-center">
           <PostUserAvatar />
@@ -56,7 +58,7 @@ export function LinkedInPreview({ author, fileId, content, fileType, isPublished
         </div>
       </header>
       <div
-        className={cn("relative px-4", {
+        className={cn("relative px-4 h-full", {
           "pb-2": !isOpen,
           "pb-8": isOpen,
         })}
@@ -94,76 +96,12 @@ export function LinkedInPreview({ author, fileId, content, fileType, isPublished
           {isOpen ? "...ver menos" : "...ver más"}
         </button>
       </div>
-      {file && file.type.includes("video") && (
-        <div className="relative mt-4">
-          <video
-            controls
-            muted
-            src={URL.createObjectURL(file)}
-            className="size-full max-h-[500px] object-contain"
-          />
-        </div>
-      )}
-      {file && file.type.includes("image") && (
-        <div className="relative mt-4">
-          <Image
-            src={URL.createObjectURL(file)}
-            alt="file"
-            width={0}
-            height={500}
-            className="size-full max-h-[500px] object-contain"
-          />
-          {!isPublished && (
-            <Button
-              onClick={() => {
-                onSetFiles([])
-                onFileSelected(null)
-              }}
-              variant="secondary"
-              className="flex items-center absolute top-2 right-4 p-2 h-8 text-purple-500 font-semibold"
-            >
-              Delete image <IconX className="ml-1.5 size-4" />
-            </Button>
-          )}
-        </div>
-      )}
-      {(!file && draftImg && fileType?.includes("image")) && (
-        <div className="relative mt-4">
-          <img
-            src={draftImg}
-            alt="file"
-            className="size-full max-h-[500px] object-contain"
-          />
-          {!isPublished && (
-            <Button
-              onClick={() => onSetDraftImg(null, fileId)}
-              variant="secondary"
-              className="flex items-center absolute top-2 right-4 p-2 h-8 text-purple-500 font-semibold"
-            >
-              Delete image <IconX className="ml-1.5 size-4" />
-            </Button>
-          )}
-        </div>
-      )}
-      {(!file && draftImg && fileType?.includes("video")) && (
-        <div className="relative mt-4">
-          <video
-            controls
-            src={draftImg}
-            className="size-full max-h-[500px] object-contain"
-          />
-          {!isPublished && (
-            <Button
-              onClick={() => onSetDraftImg(null, fileId)}
-              variant="secondary"
-              className="flex items-center absolute top-2 right-4 p-2 h-8 text-purple-500 font-semibold"
-            >
-              Delete video <IconX className="ml-1.5 size-4" />
-            </Button>
-          )}
-        </div>
-
-      )}
+      <FilePreviewThumbnail
+        fileId={fileId}
+        isImage={Boolean(fileType?.includes("image"))}
+        isVideo={Boolean(fileType?.includes("video"))}
+        isPublished={isPublished}
+      />
       <footer className="mt-3 px-4">
         <div className="flex items-center">
           <LinkedInLikeIcon />

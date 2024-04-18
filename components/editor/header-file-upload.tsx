@@ -30,7 +30,7 @@ registerPlugin(
 );
 
 const label = `
-Arrastra y suelta tu imagen o <span class="filepond--label-action">Buscar</span>
+Arrastra y suelta tu imagen o <span class="filepond--label-action font-semibold text-purple-500">Haga click para buscar</span>
 <span class="block !text-xs mt-2">SVG, PNG, JPG or GIF (10MB max)</span>
 `;
 
@@ -58,7 +58,7 @@ export function HeaderFileUpload() {
             files={files}
             onupdatefiles={onSetFiles}
             onremovefile={() => onFileSelected(null)}
-            acceptedFileTypes={["image/png, image/jpeg, image/gif", "video/mp4"]}
+            acceptedFileTypes={["image/*", "video/mp4"]}
             allowMultiple={false}
             imagePreviewMaxHeight={400}
             name="files"
