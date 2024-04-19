@@ -73,4 +73,7 @@
   body {
     @apply bg-background text-foreground;
   }
+  ::selection {
+    @apply bg-purple-500/50 text-secondary dark:text-primary;
+  }
 }
