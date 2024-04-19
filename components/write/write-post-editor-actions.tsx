@@ -31,7 +31,6 @@ export function WritePostEditorActions() {
           </Button>
         ) : (
           <Button
-            variant="secondary"
             onClick={onSaveDraft}
             className={isLoading ? "bg-green-600 text-white" : ""}
           >
