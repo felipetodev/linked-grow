@@ -1,6 +1,10 @@
-import { type JobDescriptionProps, type PostGenerator } from "./types"
+import {
+  type LearningMessageProps,
+  type JobDescriptionMessageProps,
+  type PostGenerator
+} from "./types"
 
-export const DEFAULT_POST: PostGenerator = {
+export const DEFAULT_POST: PostGenerator<string> = {
   message: '',
   tone: '',
   format: { type: 'post-generator', template: '', value: '' },
@@ -8,15 +12,33 @@ export const DEFAULT_POST: PostGenerator = {
   tag: 'all'
 } as const
 
-export const DEFAULT_JOB_DESCRIPTION: JobDescriptionProps = {
-  jobDescription: '',
-  stack: '',
-  softSkills: '',
-  benefits: '',
-  format: { type: 'post-generator', template: '', value: '' },
-  tone: '',
-  type: 'job',
-  tag: 'job',
+export const DEFAULT_JOB_DESCRIPTION: PostGenerator<JobDescriptionMessageProps> = {
+  message: {
+    jobDescription: "",
+    stack: "",
+    softSkills: "",
+    benefits: "",
+  },
+  format: { type: 'post-generator', template: "", value: "" },
+  tone: "",
+  type: "job",
+  tag: "job",
+} as const
+
+export const DEFAULT_LEARNINGS_POST: PostGenerator<LearningMessageProps> = {
+  message: {
+    learnship: "",
+    how: "",
+    keys: ""
+  },
+  format: {
+    template: "",
+    value: "",
+    type: "learning-generator"
+  },
+  tone: "",
+  type: "post",
+  tag: "learning"
 } as const
 
 export const TONE_OPTIONS = [

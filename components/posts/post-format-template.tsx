@@ -2,7 +2,6 @@ import { MemoizedReactMarkdown } from "@/components/ui/markdown"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
 import {
-  type JobDescriptionProps,
   type FormatTemplateProps,
   type PostGenerator
 } from "@/lib/types"
@@ -26,14 +25,9 @@ function PostFormat({ template, value }: Omit<FormatTemplateProps, 'type'>) {
 }
 
 type Props = {
-  type: 'post'
+  type: PostGenerator<string>['type']
   templates: FormatTemplateProps[]
-  selectedTemplateFormat: PostGenerator['format']
-  onSelectTemplateFormat: (value: FormatTemplateProps["value"]) => void
-} | {
-  type: 'job'
-  templates: FormatTemplateProps[]
-  selectedTemplateFormat: JobDescriptionProps['format']
+  selectedTemplateFormat: PostGenerator<string>['format']
   onSelectTemplateFormat: (value: FormatTemplateProps["value"]) => void
 }
 

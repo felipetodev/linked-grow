@@ -12,21 +12,16 @@ import {
 } from "@/components/ui/dialog"
 import { PostFormatTemplate } from "./post-format-template"
 import { EMPTY_FORMAT, EMPTY_JOB_FORMAT, FORMAT_JOB_TEMPLATES_ES, FORMAT_TEMPLATES_EN } from "@/lib/constants"
-import type { JobDescriptionProps, PostGenerator } from "@/lib/types"
+import { type PostGenerator } from "@/lib/types"
 
 type PostFormatDialogProps = {
-  type: 'post'
+  type: PostGenerator<string>['type']
   selectedTemplate?: number
-  onFormatChange: (value: PostGenerator['format']) => void
-  children: React.ReactNode
-} | {
-  type: 'job'
-  selectedTemplate?: number
-  onFormatChange: (value: JobDescriptionProps['format']) => void
+  onFormatChange: (value: PostGenerator<string>['format']) => void
   children: React.ReactNode
 }
 
-const FORMAT_TYPE_TEMPLATE = (selected: number, type: 'post' | 'job') => {
+const FORMAT_TYPE_TEMPLATE = (selected: number, type: PostGenerator<string>['type']) => {
   switch (type) {
     case 'post':
       return FORMAT_TEMPLATES_EN[selected]

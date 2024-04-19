@@ -2,18 +2,13 @@ import { IconPlus, IconX } from "@tabler/icons-react";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { PostFormatDialog } from "@/components/posts/post-format-dialog";
-import { type JobDescriptionProps, type PostGenerator } from "@/lib/types";
+import { type PostGenerator } from "@/lib/types";
 
 type PostFormatProps = {
-  type: 'post'
-  state: PostGenerator;
+  type: PostGenerator<string>['type']
+  state: Omit<PostGenerator<string>, 'message'>;
   onDeleteFormat: () => void;
-  onFormatChange: (value: PostGenerator['format']) => void
-} | {
-  type: 'job'
-  state: JobDescriptionProps;
-  onDeleteFormat: () => void;
-  onFormatChange: (value: JobDescriptionProps['format']) => void
+  onFormatChange: (value: PostGenerator<string>['format']) => void
 }
 
 export function PostFormat({ state, type, onFormatChange, onDeleteFormat }: PostFormatProps) {
