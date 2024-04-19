@@ -79,13 +79,13 @@ const PostEditDrawer = React.forwardRef<
                   </Button>
                 ) : (
                   <Button
-                    variant="secondary"
                     onClick={onSave}
+                    disabled={disableSave}
                     className={cn({
                       'bg-green-600 text-white cursor-not-allowed': disableSave || isLoading
                     })}
                   >
-                    {isLoading ? "Guardando..." : "Guardar borrador"}
+                    {isLoading ? "Guardando..." : "Guardar Post"}
                   </Button>
                 )}
                 <PostConfirmModal
