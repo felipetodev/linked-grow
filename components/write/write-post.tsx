@@ -138,6 +138,8 @@ const WritePost = ({ postId }: { postId: Id<"posts"> }) => {
       return
     }
 
+    setIsLoading(true)
+
     try {
       if (file && !draftImg) {
         const fileId = await getConvexStorageId(file)
@@ -150,6 +152,8 @@ const WritePost = ({ postId }: { postId: Id<"posts"> }) => {
       toast.success("Borrador guardado")
     } catch {
       toast.error("Error al guardar el borrador")
+    } finally {
+      setIsLoading(false)
     }
   }
 

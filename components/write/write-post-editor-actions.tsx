@@ -33,8 +33,9 @@ export function WritePostEditorActions() {
           <Button
             variant="secondary"
             onClick={onSaveDraft}
+            className={isLoading ? "bg-green-600 text-white" : ""}
           >
-            Guardar borrador
+            {isLoading ? "Guardando..." : "Guardar borrador"}
           </Button>
         )}
         <PostConfirmModal
