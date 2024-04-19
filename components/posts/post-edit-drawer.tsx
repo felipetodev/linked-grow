@@ -69,9 +69,25 @@ const PostEditDrawer = React.forwardRef<
                 onEditText={onEditText}
               />
               <div className="mt-4 ml-auto space-x-2 xl:space-x-4">
-                <Button variant="secondary" onClick={onSave}>
-                  Guardar borrador
-                </Button>
+                {isSuccess ? (
+                  <Button
+                    onClick={onSave}
+                    disabled={isSuccess}
+                    className='bg-green-600 text-white cursor-not-allowed'
+                  >
+                    Post publicado ✨
+                  </Button>
+                ) : (
+                  <Button
+                    variant="secondary"
+                    onClick={onSave}
+                    className={cn({
+                      'bg-green-600 text-white cursor-not-allowed': disableSave || isLoading
+                    })}
+                  >
+                    {isLoading ? "Guardando..." : "Guardar borrador"}
+                  </Button>
+                )}
                 <PostConfirmModal
                   isSuccess={isSuccess}
                   urlRef={urlRef}
