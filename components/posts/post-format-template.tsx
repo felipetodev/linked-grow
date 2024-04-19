@@ -1,10 +1,13 @@
 import { MemoizedReactMarkdown } from "@/components/ui/markdown"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
-import { FORMAT_TEMPLATES_EN } from "@/lib/constants"
-import { type PostGenerator } from "@/lib/types"
+import {
+  type JobDescriptionProps,
+  type FormatTemplateProps,
+  type PostGenerator
+} from "@/lib/types"
 
-function PostFormat({ template, value }: { template: string, value: string }) {
+function PostFormat({ template, value }: Omit<FormatTemplateProps, 'type'>) {
   return (
     <ToggleGroupItem
       value={value}
@@ -23,11 +26,18 @@ function PostFormat({ template, value }: { template: string, value: string }) {
 }
 
 type Props = {
+  type: 'post'
+  templates: FormatTemplateProps[]
   selectedTemplateFormat: PostGenerator['format']
-  onSelectTemplateFormat: (value: string) => void
+  onSelectTemplateFormat: (value: FormatTemplateProps["value"]) => void
+} | {
+  type: 'job'
+  templates: FormatTemplateProps[]
+  selectedTemplateFormat: JobDescriptionProps['format']
+  onSelectTemplateFormat: (value: FormatTemplateProps["value"]) => void
 }
 
-export function PostFormatTemplate({ selectedTemplateFormat, onSelectTemplateFormat }: Props) {
+export function PostFormatTemplate({ templates, selectedTemplateFormat, onSelectTemplateFormat }: Props) {
   return (
     <div className="grid grid-cols-2 border rounded overflow-hidden h-[520px]">
       <ScrollArea className="[&>div>*]:!flex [&>div>*]:!flex-col">
@@ -37,11 +47,11 @@ export function PostFormatTemplate({ selectedTemplateFormat, onSelectTemplateFor
           className="flex-wrap justify-start gap-0 pr-2.5"
           onValueChange={onSelectTemplateFormat}
         >
-          {FORMAT_TEMPLATES_EN.map(({ format, value }) => (
+          {templates.map(({ template, value }) => (
             <PostFormat
               key={value}
               value={value}
-              template={format}
+              template={template}
             />
           ))}
         </ToggleGroup>
@@ -59,7 +69,7 @@ export function PostFormatTemplate({ selectedTemplateFormat, onSelectTemplateFor
             }
           }}
         >
-          {selectedTemplateFormat.format}
+          {selectedTemplateFormat.template}
         </MemoizedReactMarkdown>
       </ScrollArea>
     </div>

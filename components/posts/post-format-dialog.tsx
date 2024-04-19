@@ -11,28 +11,46 @@ import {
   DialogClose
 } from "@/components/ui/dialog"
 import { PostFormatTemplate } from "./post-format-template"
-import { EMPTY_FORMAT, FORMAT_TEMPLATES_EN } from "@/lib/constants"
-import type { PostGenerator } from "@/lib/types"
+import { EMPTY_FORMAT, EMPTY_JOB_FORMAT, FORMAT_JOB_TEMPLATES_ES, FORMAT_TEMPLATES_EN } from "@/lib/constants"
+import type { JobDescriptionProps, PostGenerator } from "@/lib/types"
 
 type PostFormatDialogProps = {
+  type: 'post'
   selectedTemplate?: number
   onFormatChange: (value: PostGenerator['format']) => void
   children: React.ReactNode
+} | {
+  type: 'job'
+  selectedTemplate?: number
+  onFormatChange: (value: JobDescriptionProps['format']) => void
+  children: React.ReactNode
+}
+
+const FORMAT_TYPE_TEMPLATE = (selected: number, type: 'post' | 'job') => {
+  switch (type) {
+    case 'post':
+      return FORMAT_TEMPLATES_EN[selected]
+    case 'job':
+      return FORMAT_JOB_TEMPLATES_ES[selected]
+    default:
+      return FORMAT_TEMPLATES_EN[selected]
+  }
 }
 
 export function PostFormatDialog({
   selectedTemplate = 0,
   onFormatChange,
+  type,
   children
 }: PostFormatDialogProps) {
-  const [selectedFormat, setSelectedFormat] = useState(FORMAT_TEMPLATES_EN[selectedTemplate])
+  const [selectedFormat, setSelectedFormat] = useState(FORMAT_TYPE_TEMPLATE(selectedTemplate, type))
 
   return (
     <Dialog
       onOpenChange={(open) => {
         // if modal is open but user don't change anything, keep previous state on close
         if (!open) {
-          const t = setTimeout(() => setSelectedFormat(FORMAT_TEMPLATES_EN[selectedTemplate]), 500)
+          const t = setTimeout(() => setSelectedFormat(FORMAT_TYPE_TEMPLATE(selectedTemplate, type)), 500)
           return () => clearTimeout(t)
         }
       }}>
@@ -49,12 +67,14 @@ export function PostFormatDialog({
           </DialogDescription>
         </DialogHeader>
         <PostFormatTemplate
+          type={type}
+          templates={type === 'post' ? FORMAT_TEMPLATES_EN : FORMAT_JOB_TEMPLATES_ES}
           selectedTemplateFormat={selectedFormat}
           onSelectTemplateFormat={(value) => {
             if (value) {
-              setSelectedFormat(FORMAT_TEMPLATES_EN[Number(value)])
+              setSelectedFormat(FORMAT_TYPE_TEMPLATE(Number(value), type))
             } else {
-              setSelectedFormat(EMPTY_FORMAT)
+              setSelectedFormat(type === 'post' ? EMPTY_FORMAT : EMPTY_JOB_FORMAT)
             }
           }}
         />

@@ -1,3 +1,24 @@
+import { type JobDescriptionProps, type PostGenerator } from "./types"
+
+export const DEFAULT_POST: PostGenerator = {
+  message: '',
+  tone: '',
+  format: { type: 'post-generator', template: '', value: '' },
+  type: 'post',
+  tag: 'all'
+} as const
+
+export const DEFAULT_JOB_DESCRIPTION: JobDescriptionProps = {
+  jobDescription: '',
+  stack: '',
+  softSkills: '',
+  benefits: '',
+  format: { type: 'post-generator', template: '', value: '' },
+  tone: '',
+  type: 'job',
+  tag: 'job',
+} as const
+
 export const TONE_OPTIONS = [
   { value: "enthusiastic", label: "😃 Entusiasta" },
   { value: "professional", label: "👔 Profesional" },
@@ -16,17 +37,22 @@ export const TONE_OPTIONS = [
 
 export const EMPTY_FORMAT = {
   type: 'post-generator',
-  format: '',
+  template: '',
   value: '',
   tag: 'all'
+} as const
+
+export const EMPTY_JOB_FORMAT = {
+  ...EMPTY_FORMAT,
+  tag: 'job'
 } as const
 
 export const FORMAT_TEMPLATES_EN = [
   {
     type: 'post-generator',
-    value: '0',
+    value: '0', // should be ID
     tag: 'all',
-    format: `\
+    template: `\
 If you're in {x function}, study:
 
 1. {skill 1}
@@ -46,7 +72,7 @@ If you're in {x function}, study:
     type: 'post-generator',
     value: '1',
     tag: 'all',
-    format: `\
+    template: `\
 "{X} has changed"
 
 1. {before}
@@ -65,7 +91,7 @@ Stop complaining and start "{the right thing}". This is the ${new Date().getFull
     type: 'post-generator',
     value: '2',
     tag: 'all',
-    format: `\
+    template: `\
 This is your reminder to do {X}. Be {y}.
 
 {most popular question 1 in 8 words}
@@ -88,7 +114,7 @@ This is your reminder to do {X}. Be {y}.
     type: 'post-generator',
     value: '3',
     tag: 'stories',
-    format: `\
+    template: `\
 This 1 mindset shift changed everything for me as an {x}.
 
 When I started my {x}, I focused on:
@@ -113,7 +139,7 @@ Now, I am focusing on:`
     type: 'post-generator',
     value: '4',
     tag: 'learnings',
-    format: `\
+    template: `\
 I’ve got {achievement in numbers}, but {x} was the hardest.
 
 When I started {x}, I had:
@@ -139,7 +165,7 @@ Here’s what I did:
     type: 'post-generator',
     value: '5',
     tag: 'expertise',
-    format: `\
+    template: `\
 {x} is not just about {x} and {x}.
 
 It’s about:
@@ -169,7 +195,7 @@ When people start recognizing you for your {x} – this is {x}.`
     type: 'post-generator',
     value: '6',
     tag: 'learnings',
-    format: `\
+    template: `\
 Exactly {time} ago, I started {X}. So, here's my {x} wrapped: 
 
 
@@ -191,7 +217,7 @@ Can't wait to see what {X} has in store.`
     type: 'post-generator',
     value: '7',
     tag: 'expertise',
-    format: `\
+    template: `\
 I went from {x} to {X} in a year but grew from {x} to {x} in less than {X}.
 
 How?
@@ -217,7 +243,7 @@ Here’s what I do broadly:
     type: 'post-generator',
     value: '8',
     tag: 'celebrate',
-    format: `\
+    template: `\
 {x} lessons I've learned in {x} years of my {x} journey.
 
 I'm excited to share that I've completed {x} years.
@@ -231,5 +257,42 @@ Here are {x} lessons:
 Thank you all for your continuous support and encouragement. 
 
 Here's to even more exciting adventures ahead!`
+  }
+]
+
+export const FORMAT_JOB_TEMPLATES_ES = [
+  {
+    type: 'job-generator',
+    value: '0', // should be ID
+    tag: 'job',
+    template: `\
+{X} está creciendo rápidamente y estamos expandiendo nuestro equipo de {posición}.
+
+Somos un pequeño grupo de ingenieros obsesionados con la experiencia de desarrollo, que adoran lanzar productos end-to-end. Deseamos construir {detalles}.
+
+En este rol tu función principal será...
+- {función 1}
+- {función 2}
+- {función 3}
+- {función n}
+
+Serás un candidato ideal si...
+- {habilidad 1}
+- {habilidad 2}
+- {habilidad 3}
+- {habilidad n}
+
+Además, serias un candidato perfecto si...
+- {skill 1}
+- {skill 2}
+- {skill 3}
+- {skill n}
+
+¿Qué significaria unirte a {X}?
+- {beneficio 1}
+- {beneficio 2}
+- {beneficio 3}
+- {beneficio n}
+`,
   }
 ]

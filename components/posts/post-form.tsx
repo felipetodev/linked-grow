@@ -7,19 +7,12 @@ import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { Separator } from "@/components/ui/separator";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
-import { PostFormatDialog } from "./post-format-dialog";
-import { IconPlus, IconSparkles, IconX } from "@tabler/icons-react";
+import { IconSparkles } from "@tabler/icons-react";
+import { PostFormat } from "./post-format";
 import { AI } from "@/lib/post/actions";
 import { cn } from "@/lib/utils";
-import { EMPTY_FORMAT } from "@/lib/constants";
-import type { PostGenerator, Tone, ToneOptions } from "@/lib/types";
-
-const DEFAULT_POST: PostGenerator = {
-  message: '',
-  tone: '',
-  format: { type: 'post-generator', format: '', value: '' },
-  type: 'post'
-}
+import { DEFAULT_POST, EMPTY_FORMAT } from "@/lib/constants";
+import type { Tone, ToneOptions } from "@/lib/types";
 
 export function PostForm({ tones, initialPost }: { tones: ToneOptions, initialPost?: string }) {
   const [state, setState] = useState(DEFAULT_POST)
@@ -41,7 +34,7 @@ export function PostForm({ tones, initialPost }: { tones: ToneOptions, initialPo
           const { format, ...rest } = state
 
           try {
-            const responseMessage = await submitUserMessage({ ...rest, format: format.format, type: 'post' })
+            const responseMessage = await submitUserMessage({ ...rest, format: format.template, type: 'post' })
             setMessages(currentMessages => [...currentMessages, responseMessage])
           } catch (error) {
             console.error(error)
@@ -89,65 +82,12 @@ export function PostForm({ tones, initialPost }: { tones: ToneOptions, initialPo
           </ToggleGroup>
         </div>
 
-        <div className="grid w-full gap-y-4">
-          <Label htmlFor="format" className="font-semibold">
-            Selecciona un formato de post
-          </Label>
-
-          {state.format?.format ? (
-            <div className="p-4 border rounded max-w-md">
-              <div className="grid">
-                <h2 className="truncate overflow-hidden">
-                  {state.format.format.split(' ', 12).join(' ')}
-                </h2>
-                <h4 className="truncate text-xs opacity-50">
-                  {state.format.format.split(' ').slice(12).join(' ').split(' ', 10).join(' ')}
-                </h4>
-              </div>
-              <div className="flex justify-between mt-2">
-                <PostFormatDialog
-                  onFormatChange={(value) => setState({ ...state, format: value })}
-                  selectedTemplate={Number(state.format.value)}
-                >
-                  <Button
-                    id="format"
-                    className="w-fit"
-                    variant='secondary'
-                    type='button'
-                    size='sm'
-                  >
-                    Editar formato seleccionado
-                  </Button>
-                </PostFormatDialog>
-
-                <Button
-                  id="format"
-                  className="w-fit"
-                  variant='destructive'
-                  type='button'
-                  size='sm'
-                  onClick={() => setState({ ...state, format: EMPTY_FORMAT })}
-                >
-                  <IconX size={20} className="mr-1" /> Remover
-                </Button>
-              </div>
-            </div>
-          ) : (
-            <PostFormatDialog
-              onFormatChange={(value) => setState({ ...state, format: value })}
-            >
-              <Button
-                id="format"
-                variant='secondary'
-                type='button'
-                className="w-fit"
-                size='sm'
-              >
-                <IconPlus className="mr-2" /> Formato de post
-              </Button>
-            </PostFormatDialog>
-          )}
-        </div>
+        <PostFormat
+          type="post"
+          state={state}
+          onDeleteFormat={() => setState({ ...state, format: EMPTY_FORMAT })}
+          onFormatChange={(value) => setState({ ...state, format: value })}
+        />
 
         {/* <Button
           disabled={isLoading}
