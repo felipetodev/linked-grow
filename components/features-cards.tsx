@@ -40,7 +40,7 @@ const FEATURES_CARDS = [
   },
   {
     href: '/mock',
-    title: "Mock",
+    title: "Feature",
     description: "Mock",
     active: false,
     icon: <IconBrandYoutube size={30} />,
