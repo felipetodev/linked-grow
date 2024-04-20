@@ -11,7 +11,12 @@ import {
   DialogClose
 } from "@/components/ui/dialog"
 import { PostFormatTemplate } from "./post-format-template"
-import { EMPTY_FORMAT, EMPTY_JOB_FORMAT, FORMAT_JOB_TEMPLATES_ES, FORMAT_TEMPLATES_EN } from "@/lib/constants"
+import {
+  EMPTY_FORMAT,
+  EMPTY_JOB_FORMAT,
+  FORMAT_JOB_TEMPLATES_ES,
+  FORMAT_TEMPLATES_EN
+} from "@/lib/constants"
 import { type PostGenerator } from "@/lib/types"
 
 type PostFormatDialogProps = {

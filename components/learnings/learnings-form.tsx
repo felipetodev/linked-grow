@@ -6,7 +6,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { IconSparkles } from "@tabler/icons-react";
 import { PostFormat } from "@/components/posts/post-format";
-import { DEFAULT_LEARNINGS_POST, EMPTY_JOB_FORMAT } from "@/lib/constants";
+import { DEFAULT_LEARNINGS_POST } from "@/lib/constants";
 import { useActions, useUIState } from "ai/rsc";
 import { type AI } from "@/lib/post/actions";
 
@@ -86,7 +86,7 @@ export function LearningForm() {
         <PostFormat
           type="post"
           state={state}
-          onDeleteFormat={() => setState({ ...state, format: EMPTY_JOB_FORMAT })}
+          onDeleteFormat={() => setState({ ...state, format: DEFAULT_LEARNINGS_POST["format"] })}
           onFormatChange={(value) => {
             setState({ ...state, format: value })
           }}

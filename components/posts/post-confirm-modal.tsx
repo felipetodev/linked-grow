@@ -99,7 +99,7 @@ export function PostConfirmModal({
                   id="comment"
                   ref={inputText}
                   className="mt-4 resize-none min-h-[150px] max-h-[300px] [field-sizing:content]"
-                  placeholder="Añade un primer comentario a tu post (opcional)"
+                  placeholder="Añade un primer comentario o link a tu post (opcional)"
                 />
               </div>
             </AlertDialogHeader>
