@@ -100,9 +100,9 @@ const IdeasTabs = React.forwardRef<
           router.push(createUrl('/ideas', params));
         }}
       >
-        <TabsList className="mb-4">
-          <TabsTrigger className="min-w-28" value="generate">Generar</TabsTrigger>
-          <TabsTrigger value="saved">
+        <TabsList className="mb-4 w-full md:w-auto">
+          <TabsTrigger className="w-full md:w-auto md:min-w-28" value="generate">Generar</TabsTrigger>
+          <TabsTrigger value="saved" className="w-full md:w-auto">
             Publicados
             {ideas?.length! > 0 && (
               <span className="ml-2 text-sm">
