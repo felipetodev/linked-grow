@@ -11,9 +11,11 @@ export function CardsIdeas({ ideas }: { ideas: { message: string, id: string }[]
   const { savedIdeas, onSaveIdea } = useIdeas()
   return (
     <div className="grid sm:grid-cols-2 gap-6">
-      {ideas.map(({ message, id }) => (
+      {ideas.map(({ message, id }, i) => (
         <div key={id} className="flex flex-col justify-between border rounded p-2 transition hover:-translate-y-0.5 hover:bg-secondary">
-          <p className="text-sm mb-4">{message}</p>
+          <p className="text-sm mb-4">
+            {`${(i+1)}. `} {message}
+          </p>
           <footer className="flex gap-x-2 w-full">
             <Tooltip delayDuration={0}>
               <TooltipTrigger asChild>
