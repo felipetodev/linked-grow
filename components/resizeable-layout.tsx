@@ -1,12 +1,13 @@
 'use client'
 
 import { useState } from "react"
-import { cn } from "@/lib/utils"
-import { IconBox, IconBulb, IconChartLine, IconSparkles } from "@tabler/icons-react"
-import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "./ui/resizable"
-import { TooltipProvider } from "./ui/tooltip"
-import { Nav } from "./nav"
 import { usePathname } from "next/navigation"
+import { IconBox, IconBulb, IconChartLine, IconShare3, IconSparkles } from "@tabler/icons-react"
+import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "@/components/ui/resizable"
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
+import { Button } from "@/components/ui/button"
+import { Nav } from "@/components/nav"
+import { cn } from "@/lib/utils"
 
 interface ResizeableProps {
   defaultLayout: number[] | undefined
@@ -60,24 +61,30 @@ export function Resizeable({
             "min-w-[60px] transition-all duration-300 ease-in-out"
           )}
         >
-          {/* <div
+          <div
             className={cn(
-              "flex h-[52px] items-center justify-center",
+              "flex h-[52px] items-center justify-center pt-4 pb-2",
               isCollapsed ? "h-[52px]" : "px-2"
             )}
           >
             {isCollapsed ? (
-              <IconBox size={24} />
+              <Tooltip delayDuration={0}>
+                <TooltipTrigger asChild>
+                  <Button size="icon" className="size-10 p-0 font-bold bg-purple-500 text-white hover:bg-purple-500/60">
+                    <IconShare3 size={20} />
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent side="right" className="flex items-center gap-4">
+                  Nuevo post
+                </TooltipContent>
+              </Tooltip>
             ) : (
-              <div className="flex space-x-2">
-                <IconBox size={24} />
-                <Link href='/' className="text-lg font-semibold">
-                  Mailbox
-                </Link>
-              </div>
+              <Button className="w-full font-bold bg-purple-500 text-white hover:bg-purple-500/60 rounded-3xl">
+                Post
+              </Button>
             )}
-          </div> */}
-          {/* <Separator /> */}
+          </div>
+
           <Nav
             isCollapsed={isCollapsed}
             links={[
