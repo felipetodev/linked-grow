@@ -59,7 +59,7 @@ export function PostForm({ tones, initialPost }: { tones: ToneOptions, initialPo
 
         <div className="grid gap-y-4 flex-wrap max-w-[400px]">
           <Label htmlFor="tone" className="font-semibold">
-            Sobre que tema quieres escribir?
+            ¿Qué estilo de tono prefieres para tu post?
           </Label>
           <ToggleGroup
             id="tone"
