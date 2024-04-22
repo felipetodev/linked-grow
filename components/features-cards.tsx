@@ -52,7 +52,11 @@ export function FeaturesCards() {
     <div className="grid gap-8 grid-cols-[repeat(auto-fill,_minmax(280px,1fr))]">
       {
         FEATURES_CARDS.map((card) => (
-          <Link key={card.href} href={card.href} className="flex flex-col min-h-[250px] relative hover:opacity-80 px-2 py-4 bg-gradient-to-r from-pink-500 to-yellow-500 rounded transition-opacity">
+          <Link
+            key={card.href}
+            href={card.href}
+            className="relative flex flex-col min-h-[250px] px-2 py-4 bg-gradient-to-r from-pink-500 to-purple-900 rounded transition duration-300 hover:-translate-y-2 hover:shadow-xl"
+          >
             <h2 className="text-2xl font-semibold my-4 self-end">
               {card.title}{" "}
               <span className="inline-block align-bottom p-1 text-purple-500 shadow-sm rounded-lg">
@@ -65,7 +69,7 @@ export function FeaturesCards() {
               {card.description}
             </span>
             {!card.active && (
-              <span className="absolute top-1.5 right-1.5 text-xs font-medium px-2.5 py-0.5 rounded bg-purple-900 text-purple-300">
+              <span className="absolute top-1.5 right-1.5 text-xs font-medium px-2.5 py-0.5 rounded border bg-purple-500 text-purple-200">
                 Soon
               </span>
             )}

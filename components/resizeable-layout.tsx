@@ -1,11 +1,12 @@
 'use client'
 
 import { useState } from "react"
+import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { IconBox, IconBulb, IconChartLine, IconShare3, IconSparkles } from "@tabler/icons-react"
+import { IconBox, IconBuildingCarousel, IconBulb, IconChartLine, IconShare3, IconSparkles } from "@tabler/icons-react"
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "@/components/ui/resizable"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
-import { Button } from "@/components/ui/button"
+import { Button, buttonVariants } from "@/components/ui/button"
 import { Nav } from "@/components/nav"
 import { cn } from "@/lib/utils"
 
@@ -70,8 +71,8 @@ export function Resizeable({
             {isCollapsed ? (
               <Tooltip delayDuration={0}>
                 <TooltipTrigger asChild>
-                  <Button size="icon" className="size-10 p-0 font-bold bg-purple-500 text-white hover:bg-purple-500/60">
-                    <IconShare3 size={20} />
+                  <Button size="icon" className="size-10 p-0 font-bold bg-purple-500 text-white hover:bg-purple-500/60 group/link">
+                    <IconShare3 size={20} className="transition-transform group-hover/link:scale-125" />
                   </Button>
                 </TooltipTrigger>
                 <TooltipContent side="right" className="flex items-center gap-4">
@@ -79,9 +80,15 @@ export function Resizeable({
                 </TooltipContent>
               </Tooltip>
             ) : (
-              <Button className="w-full font-bold bg-purple-500 text-white hover:bg-purple-500/60 rounded-3xl">
-                Post
-              </Button>
+              <Link
+                href="/new"
+                className={cn(
+                  buttonVariants(),
+                  "w-full font-semibold bg-purple-500 text-white hover:bg-purple-500/60 rounded-3xl text-base"
+                )}
+              >
+                <IconShare3 size={20} className="mr-2" /> Post
+              </Link>
             )}
           </div>
 
@@ -101,6 +108,13 @@ export function Resizeable({
                 icon: IconBulb,
                 variant: path === '/ideas' ? "default" : "ghost",
                 href: '/ideas'
+              },
+              {
+                title: "Carousel templates",
+                // label: "2",
+                icon: IconBuildingCarousel,
+                variant: path === '/carousels' ? "default" : "ghost",
+                href: '/carousels'
               },
               {
                 title: "Posts",
