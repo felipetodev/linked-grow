@@ -13,13 +13,17 @@ import { CardsIdeas } from '@/app/(dashboard)/ideas/components/cards-ideas'
 import { CardsSkeleton } from '@/app/(dashboard)/ideas/components/cards-skeleton'
 import { IconLoader } from '@tabler/icons-react'
 import { learningDefaultPrompt, postGeneratorPrompt } from '@/lib/prompt'
-import { type LearningMessageProps, type PostGenerator } from '@/lib/types'
+import {
+  type PostLearningGenerator,
+  type PostGenerator,
+  type PostJobGenerator
+} from '@/lib/types'
 
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY || ''
 })
 
-function contentMessage({ type, message }: PostGenerator<string>) {
+function contentMessage({ type, message }: PostGenerator) {
   switch (type) {
     case 'post':
       return message
@@ -30,7 +34,7 @@ function contentMessage({ type, message }: PostGenerator<string>) {
   }
 }
 
-async function submitUserMessage(state: PostGenerator<string>) {
+async function submitUserMessage(state: PostGenerator) {
   'use server'
 
   const aiState = getMutableAIState<typeof AI>()
@@ -141,7 +145,7 @@ async function submitUserMessage(state: PostGenerator<string>) {
   }
 }
 
-async function submitLearningForm(state: PostGenerator<LearningMessageProps>) {
+async function submitLearningForm(state: PostLearningGenerator) {
   'use server'
 
   const aiState = getMutableAIState<typeof AI>()
@@ -176,7 +180,85 @@ Ayudame a crear un post para LinkedIn motivando a las demas personas.`
         content: await postGeneratorPrompt({
           format: state.format || learningDefaultPrompt,
           tone: state.tone
-        } as PostGenerator<string>),
+        } as PostGenerator),
+      },
+      ...aiState.get().messages.map((message: any) => ({
+        role: message.role,
+        content: message.content,
+        name: message.name
+      }))
+    ],
+    text: ({ content, done, delta }) => {
+      if (!textStream) {
+        textStream = createStreamableValue('')
+        textNode = <Post content={textStream.value} />
+      }
+
+      if (done) {
+        textStream.done()
+        aiState.done({
+          ...aiState.get(),
+          messages: [
+            ...aiState.get().messages,
+            {
+              id: crypto.randomUUID(),
+              role: 'assistant',
+              content
+            }
+          ]
+        })
+      } else {
+        textStream.update(delta)
+      }
+
+      return textNode
+    }
+  })
+
+  return {
+    id: crypto.randomUUID(),
+    display: ui,
+  }
+}
+
+async function submitJobDescriptionForm(state: PostJobGenerator) {
+  'use server'
+
+  const aiState = getMutableAIState<typeof AI>()
+
+  aiState.update({
+    ...aiState.get(),
+    messages: [
+      ...aiState.get().messages,
+      {
+        id: crypto.randomUUID(),
+        role: 'user',
+        content: `\
+Crea una descripción de trabajo para empresa ${state.message.company}.
+El puesto de trabajo es ${state.message.jobPosition}.
+El rol del trabajo será ${state.message.jobRole}.
+Las habilidades necesarias son ${state.message.stack}.
+Las habilidades blandas son ${state.message.softSkills}.
+Los beneficios de trabajar en esta empresa son ${state.message.benefits}.
+`
+      }
+    ]
+  })
+
+  let textStream: undefined | ReturnType<typeof createStreamableValue<string>>
+  let textNode: undefined | React.ReactNode
+
+  const ui = render({
+    model: 'gpt-3.5-turbo',
+    provider: openai,
+    initial: <IconLoader className="animate-spin" />,
+    messages: [
+      {
+        role: 'system',
+        content: await postGeneratorPrompt({
+          format: state.format, // || jobDescriptionPrompt // <--------------------------- ✨👀
+          tone: state.tone || 'professional'
+        } as PostGenerator),
       },
       ...aiState.get().messages.map((message: any) => ({
         role: message.role,
@@ -237,7 +319,8 @@ export type UIState = {
 export const AI = createAI<AIState, UIState>({
   actions: {
     submitUserMessage,
-    submitLearningForm
+    submitLearningForm,
+    submitJobDescriptionForm
   },
   initialUIState: [],
   initialAIState: { chatId: crypto.randomUUID(), messages: [] }

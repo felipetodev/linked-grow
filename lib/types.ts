@@ -10,7 +10,7 @@ export type FormatTemplateProps = {
   value: string
 }
 
-export type PostGenerator<T> = {
+export type PostGenerator<T = string> = {
   message: T
   tone: Tone
   format: FormatTemplateProps
@@ -18,15 +18,20 @@ export type PostGenerator<T> = {
   tag: 'all' | 'ideas' | 'job' | 'learning'
 }
 
-export type JobDescriptionMessageProps = {
-  jobDescription: string
+type JobDescriptionMessageProps = {
+  company: string
+  jobPosition: string
+  jobRole: string
   stack: string
   softSkills: string
   benefits: string
 }
 
-export type LearningMessageProps = {
+type LearningMessageProps = {
   learnship: string,
   how: string,
   keys: string
 }
+
+export type PostJobGenerator = PostGenerator<JobDescriptionMessageProps>
+export type PostLearningGenerator = PostGenerator<LearningMessageProps>

@@ -5,10 +5,10 @@ import { PostFormatDialog } from "@/components/posts/post-format-dialog";
 import { type PostGenerator } from "@/lib/types";
 
 type PostFormatProps = {
-  type: PostGenerator<string>['type']
-  state: Omit<PostGenerator<string>, 'message'>;
+  type: PostGenerator['type']
+  state: Omit<PostGenerator, 'message'>;
   onDeleteFormat: () => void;
-  onFormatChange: (value: PostGenerator<string>['format']) => void
+  onFormatChange: (value: PostGenerator['format']) => void
 }
 
 export function PostFormat({ state, type, onFormatChange, onDeleteFormat }: PostFormatProps) {

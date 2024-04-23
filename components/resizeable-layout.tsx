@@ -71,7 +71,7 @@ export function Resizeable({
             {isCollapsed ? (
               <Tooltip delayDuration={0}>
                 <TooltipTrigger asChild>
-                  <Button size="icon" className="size-10 p-0 font-bold bg-purple-500 text-white hover:bg-purple-500/60 group/link">
+                  <Button size="icon" className="size-10 p-0 font-bold bg-gradient-to-br from-pink-500 to-purple-900 text-white group/link">
                     <IconShare3 size={20} className="transition-transform group-hover/link:scale-125" />
                   </Button>
                 </TooltipTrigger>
@@ -84,7 +84,7 @@ export function Resizeable({
                 href="/new"
                 className={cn(
                   buttonVariants(),
-                  "w-full font-semibold bg-purple-500 text-white hover:bg-purple-500/60 rounded-3xl text-base"
+                  "w-full font-semibold bg-gradient-to-l from-pink-500 to-purple-900 text-white rounded-3xl text-base transition-opacity hover:opacity-95"
                 )}
               >
                 <IconShare3 size={20} className="mr-2" /> Post

@@ -20,13 +20,13 @@ import {
 import { type PostGenerator } from "@/lib/types"
 
 type PostFormatDialogProps = {
-  type: PostGenerator<string>['type']
+  type: PostGenerator['type']
   selectedTemplate?: number
-  onFormatChange: (value: PostGenerator<string>['format']) => void
+  onFormatChange: (value: PostGenerator['format']) => void
   children: React.ReactNode
 }
 
-const FORMAT_TYPE_TEMPLATE = (selected: number, type: PostGenerator<string>['type']) => {
+const FORMAT_TYPE_TEMPLATE = (selected: number, type: PostGenerator['type']) => {
   switch (type) {
     case 'post':
       return FORMAT_TEMPLATES_EN[selected]

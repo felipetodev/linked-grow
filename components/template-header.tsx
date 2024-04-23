@@ -1,8 +1,9 @@
 "use client"
 
+import { usePathname, useSearchParams } from "next/navigation";
 import { Separator } from "@/components/ui/separator"
-import { IconMessageShare, IconPencil } from "@tabler/icons-react";
-import { useSearchParams } from "next/navigation";
+import { Button } from "@/components/ui/button";
+import { IconCircleArrowLeft, IconMessageShare, IconPencil } from "@tabler/icons-react";
 
 type Props = {
   title: string
@@ -15,10 +16,20 @@ function getSearchParamsValue(searchParams: URLSearchParams, key: string): strin
 
 export function TemplateHeader({ title, description }: Props) {
   const searchParams = useSearchParams();
+  const pathname = usePathname();
   const status = getSearchParamsValue(searchParams, "status");
-
   return (
     <nav className="flex flex-col gap-y-2 mb-6">
+      {pathname !== "/" && (
+        <Button
+          variant="ghost"
+          className="w-max h-7 p-0 text-xs"
+          onClick={() => history.back()}
+        >
+          <IconCircleArrowLeft size={16} className="mr-1" />
+          Volver atrás
+        </Button>
+      )}
       <div className="flex items-center space-x-2">
         <h2 className="text-4xl font-semibold">
           {title}

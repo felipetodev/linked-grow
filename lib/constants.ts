@@ -1,10 +1,10 @@
 import {
-  type LearningMessageProps,
-  type JobDescriptionMessageProps,
-  type PostGenerator
+  type PostGenerator,
+  type PostJobGenerator,
+  type PostLearningGenerator
 } from "./types"
 
-export const DEFAULT_POST: PostGenerator<string> = {
+export const DEFAULT_POST: PostGenerator = {
   message: '',
   tone: '',
   format: { type: 'post-generator', template: '', value: '' },
@@ -12,9 +12,11 @@ export const DEFAULT_POST: PostGenerator<string> = {
   tag: 'all'
 } as const
 
-export const DEFAULT_JOB_DESCRIPTION: PostGenerator<JobDescriptionMessageProps> = {
+export const DEFAULT_JOB_DESCRIPTION: PostJobGenerator = {
   message: {
-    jobDescription: "",
+    company: "",
+    jobPosition: "",
+    jobRole: "",
     stack: "",
     softSkills: "",
     benefits: "",
@@ -25,7 +27,7 @@ export const DEFAULT_JOB_DESCRIPTION: PostGenerator<JobDescriptionMessageProps> 
   tag: "job",
 } as const
 
-export const DEFAULT_LEARNINGS_POST: PostGenerator<LearningMessageProps> = {
+export const DEFAULT_LEARNINGS_POST: PostLearningGenerator = {
   message: {
     learnship: "",
     how: "",
@@ -290,7 +292,7 @@ export const FORMAT_JOB_TEMPLATES_ES = [
     template: `\
 {X} está creciendo rápidamente y estamos expandiendo nuestro equipo de {posición}.
 
-Somos un pequeño grupo de ingenieros obsesionados con la experiencia de desarrollo, que adoran lanzar productos end-to-end. Deseamos construir {detalles}.
+Somos un grupo de ingenieros obsesionados con la experiencia de desarrollo, que adoran lanzar productos end-to-end. Deseamos construir {detalles}.
 
 En este rol tu función principal será...
 - {función 1}

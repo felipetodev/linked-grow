@@ -28,7 +28,7 @@ const FEATURES_CARDS = [
     href: "/templates/job-description",
     title: "Genera una descripción de trabajo con IA",
     description: "Crea una descripción de trabajo precisa, atractiva y profesional para tus ofertas de empleo.",
-    active: false,
+    active: true,
     icon: <IconBriefcase size={30} />,
   },
   {
@@ -55,17 +55,18 @@ export function FeaturesCards() {
           <Link
             key={card.href}
             href={card.href}
-            className="relative flex flex-col min-h-[250px] px-2 py-4 bg-gradient-to-r from-pink-500 to-purple-900 rounded transition duration-300 hover:-translate-y-2 hover:shadow-xl"
+            aria-disabled={!card.active}
+            className="relative flex flex-col min-h-[250px] px-2 py-4 bg-gradient-to-br from-pink-500 to-purple-900 rounded transition duration-300 hover:-translate-y-2 hover:shadow-xl aria-disabled:pointer-events-none aria-disabled:opacity-90"
           >
-            <h2 className="text-2xl font-semibold my-4 self-end">
+            <h2 className="text-2xl font-semibold my-4 self-end text-white">
               {card.title}{" "}
-              <span className="inline-block align-bottom p-1 text-purple-500 shadow-sm rounded-lg">
+              <span className="inline-block align-bottom p-1 text-purple-300 shadow-sm rounded-lg">
                 {card.icon}
               </span>
               {" "}
             </h2>
             <Separator className="mb-4" />
-            <span className="text-sm">
+            <span className="text-sm text-white">
               {card.description}
             </span>
             {!card.active && (

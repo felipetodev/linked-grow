@@ -1,13 +1,13 @@
 import { PromptTemplate } from "@langchain/core/prompts";
 import { PostGenerator, Tone } from "../types";
 
-const formatVariable = (variable: PostGenerator<string>['format']) => `\
+const formatVariable = (variable: PostGenerator['format']) => `\
 Follow the schema below to create the post:
 ---------------------
 ${variable}
 ---------------------`;
 
-export async function postGeneratorPrompt({ tone, format }: PostGenerator<string>) {
+export async function postGeneratorPrompt({ tone, format }: PostGenerator) {
   const promptTemplate = (tone: Tone) => PromptTemplate.fromTemplate(`\
 You are a LinkedIn expert who can help users to grow their network and get more audience.
 You will help to craft engaging posts, articles, and messages and give advice on how to improve their personal brand on LinkedIn.
@@ -45,3 +45,6 @@ Me intriga saber, ¿cuál es la cosa más importante que has aprendido recientem
 ¿Cómo ha cambiado tu perspectiva o enfoque de la vida? ¡Sigamos el ciclo de aprendizaje!
 
 {hashtags}`;
+
+export const jobDescriptionPrompt = `\
+`;

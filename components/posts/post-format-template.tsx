@@ -25,9 +25,9 @@ function PostFormat({ template, value }: Omit<FormatTemplateProps, 'type'>) {
 }
 
 type Props = {
-  type: PostGenerator<string>['type']
+  type: PostGenerator['type']
   templates: FormatTemplateProps[]
-  selectedTemplateFormat: PostGenerator<string>['format']
+  selectedTemplateFormat: PostGenerator['format']
   onSelectTemplateFormat: (value: FormatTemplateProps["value"]) => void
 }
 
