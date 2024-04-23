@@ -64,7 +64,7 @@ export function Resizeable({
         >
           <div
             className={cn(
-              "flex h-[52px] items-center justify-center pt-4 pb-2",
+              "flex h-[52px] items-center justify-center mt-3 pb-2",
               isCollapsed ? "h-[52px]" : "px-2"
             )}
           >

@@ -8,6 +8,9 @@ import { TemplateHeader } from "@/components/template-header"
 export default async function Layout() {
   return (
     <>
+      <span className="font-semibold">
+        Featured
+      </span>
       <TemplateHeader
         title="Genera un post con IA"
         description="Selecciona una plantilla y genera un post con inteligencia artificial"

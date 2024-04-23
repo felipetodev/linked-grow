@@ -20,10 +20,10 @@ export function TemplateHeader({ title, description }: Props) {
   const status = getSearchParamsValue(searchParams, "status");
   return (
     <nav className="flex flex-col gap-y-2 mb-6">
-      {pathname !== "/" && (
+      {pathname.includes("/templates") && (
         <Button
           variant="ghost"
-          className="w-max h-7 p-0 text-xs"
+          className="w-max h-7 py-0 px-2 text-xs hover:text-purple-500"
           onClick={() => history.back()}
         >
           <IconCircleArrowLeft size={16} className="mr-1" />

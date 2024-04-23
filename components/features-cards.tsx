@@ -49,7 +49,7 @@ const FEATURES_CARDS = [
 
 export function FeaturesCards() {
   return (
-    <div className="grid gap-8 grid-cols-[repeat(auto-fill,_minmax(280px,1fr))]">
+    <div className="animate-fade-in-up grid gap-8 grid-cols-[repeat(auto-fill,_minmax(280px,1fr))]">
       {
         FEATURES_CARDS.map((card) => (
           <Link
