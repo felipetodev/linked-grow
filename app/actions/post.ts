@@ -9,7 +9,17 @@ const { CLERK_OAUTH_PROVIDER = "" } = process.env
 const linkedinUri = "https://api.linkedin.com/v2"
 const provider = CLERK_OAUTH_PROVIDER as `oauth_${OAuthProvider}`
 
-async function addComment({ accessToken, externalId, text, postUrn }: { accessToken: string, text: string, postUrn: string, externalId: string }) {
+async function addComment({
+  accessToken,
+  externalId,
+  text,
+  postUrn
+}: {
+  accessToken: string,
+  text: string,
+  postUrn: string,
+  externalId: string
+}) {
   const res = await fetch(`${linkedinUri}/socialActions/${decodeURIComponent(postUrn)}/comments`, {
     method: "POST",
     headers: {
@@ -33,16 +43,20 @@ async function uploadImage({
 }: { accessToken: string, uploadUrl: string, file: FormData }) {
   try {
     const fileData = file.get("file") as File
-
-    // transform FormData file to Buffer
+    const { 0: fileType } = fileData.type.split("/")
     const file_ = await fileData.arrayBuffer().then((buffer) => new Uint8Array(buffer))
 
     const imageUploadRes = await fetch(uploadUrl, {
       method: "PUT",
       headers: {
-        "Content-Type": `image/${fileData.type}; charset=utf-8`,
-        Authorization: `Bearer ${accessToken}`,
-        'x-amz-acl': 'public-read',
+        ...fileType === "image" && {
+          "Content-Type": `image/${fileData.type}; charset=utf-8`,
+          Authorization: `Bearer ${accessToken}`,
+          'x-amz-acl': 'public-read',
+        },
+        ...fileType === "video" && {
+          "Content-Type": "application/octet-stream"
+        }
       },
       body: file_,
       redirect: "follow",
@@ -69,6 +83,13 @@ async function registerFile({
   externalId: string,
   file: FormData
 }) {
+  const fileData = file.get("file") as File
+  const { 0: fileType } = (fileData.type).split("/") as ["image" | "video"]
+
+  const recipes = fileType === "image"
+    ? ["urn:li:digitalmediaRecipe:feedshare-image"]
+    : ["urn:li:digitalmediaRecipe:feedshare-video"]
+
   const res = await fetch(`${linkedinUri}/assets?action=registerUpload`, {
     method: "POST",
     headers: {
@@ -78,7 +99,7 @@ async function registerFile({
     body: JSON.stringify({
       registerUploadRequest: {
         owner: `urn:li:person:${externalId}`,
-        recipes: ["urn:li:digitalmediaRecipe:feedshare-image"],
+        recipes,
         serviceRelationships: [
           {
             identifier: "urn:li:userGeneratedContent",
@@ -106,19 +127,21 @@ async function registerFile({
     return null
   }
 
-  return imageAsset
+  return { asset: imageAsset, assetType: fileType }
 }
 
 async function createPost({
   accessToken,
   externalId,
   text,
-  asset
+  asset,
+  assetType
 }: {
   accessToken: string,
   text: string,
   externalId: string,
   asset?: string | null
+  assetType?: 'image' | 'video' | null
 }) {
   const res = await fetch(`${linkedinUri}/ugcPosts`, {
     method: "POST",
@@ -133,7 +156,7 @@ async function createPost({
       specificContent: {
         "com.linkedin.ugc.ShareContent": {
           shareCommentary: { text },
-          shareMediaCategory: asset ? "IMAGE" : "NONE", // 'NONE' | 'ARTICLE' | 'IMAGE',
+          shareMediaCategory: assetType?.toUpperCase() ?? "NONE",
           ...asset && ({
             media: [
               {
@@ -159,11 +182,20 @@ async function createPost({
   return await res.json();
 }
 
-export async function publishPost({ text, comment, file }: { text: string, comment?: string, file: FormData | null }) {
+export async function publishPost({
+  text,
+  comment,
+  file
+}: {
+  text: string,
+  comment?: string,
+  file: FormData | null
+}) {
   const parsedCredentials = z.object({
     text: z.string(),
     comment: z.string().optional(),
-  }).safeParse({ text, comment });
+    file: z.instanceof(FormData).nullable()
+  }).safeParse({ text, comment, file });
 
   const { userId } = auth();
 
@@ -191,8 +223,11 @@ export async function publishPost({ text, comment, file }: { text: string, comme
   }
 
   let asset: string | null = null;
+  let assetType: 'image' | 'video' | null = null;
   if (file) {
-    asset = await registerFile({ accessToken, externalId, file });
+    const register = await registerFile({ accessToken, externalId, file });
+    asset = register?.asset
+    assetType = register?.assetType ?? null
   }
 
   if (file && !asset) {
@@ -203,7 +238,8 @@ export async function publishPost({ text, comment, file }: { text: string, comme
     accessToken,
     externalId,
     text,
-    asset
+    asset,
+    assetType
   })
 
   if (post.status >= 400) {
