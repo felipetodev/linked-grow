@@ -6,11 +6,12 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { IconSparkles } from "@tabler/icons-react";
 import { PostFormat } from "@/components/posts/post-format";
+import { YoutubeSkeleton } from "./youtube-skeleton";
 import { DEFAULT_YOUTUBE_POST } from "@/lib/constants";
 import { useActions, useUIState } from "ai/rsc";
 import { useDebouncedCallback } from "use-debounce";
+import { toast } from "sonner";
 import { type AI } from "@/lib/post/actions";
-import { YoutubeSkeleton } from "./youtube-skeleton";
 
 function getVideoId(url: string) {
   if (!url.trim() || !url.includes("https://www.youtube.com/watch?v=")) return ""
@@ -39,11 +40,15 @@ export function YoutubeForm() {
 
           const { format, ...rest } = state
 
+          if (!getVideoId(rest.message.url)) {
+            return toast.warning('Debes ingresar una URL valida')
+          }
+
           try {
             const responseMessage = await submitYoutubeForm({ ...rest, format: format.template })
             setMessages(currentMessages => [...currentMessages, responseMessage])
           } catch (error) {
-            console.error(error)
+            toast.error((error as Error)?.message)
           }
         }}
         className="md:sticky md:top-6 h-full flex flex-col gap-y-6 mb-6"
@@ -73,7 +78,7 @@ export function YoutubeForm() {
             referrerPolicy="strict-origin-when-cross-origin"
             allowFullScreen
           ></iframe>
-        ): (
+        ) : (
           <YoutubeSkeleton />
         )}
         <PostFormat

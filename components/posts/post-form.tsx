@@ -12,6 +12,7 @@ import { PostFormat } from "./post-format";
 import { AI } from "@/lib/post/actions";
 import { cn } from "@/lib/utils";
 import { DEFAULT_POST, EMPTY_FORMAT } from "@/lib/constants";
+import { toast } from "sonner";
 import type { Tone, ToneOptions } from "@/lib/types";
 
 export function PostForm({ tones, initialPost }: { tones: ToneOptions, initialPost?: string }) {
@@ -32,6 +33,10 @@ export function PostForm({ tones, initialPost }: { tones: ToneOptions, initialPo
           e.preventDefault()
 
           const { format, ...rest } = state
+
+          if (!rest.message.trim()) {
+            return toast.warning('Debes ingresar un mensaje')
+          }
 
           try {
             const responseMessage = await submitUserMessage({ ...rest, format: format.template, type: 'post' })

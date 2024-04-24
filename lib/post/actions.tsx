@@ -305,19 +305,24 @@ Los beneficios de trabajar en esta empresa son ${state.message.benefits}.
 async function submitYoutubeForm(state: PostYoutubeGenerator) {
   'use server'
 
-  const loader = YoutubeLoader.createFromUrl(state.message.url, {
-    language: "en",
-    addVideoInfo: true,
-  });
-  
-  const docs = await loader.load();
-  const summary: Document[] = docs.map(({ pageContent, metadata }) => ({
-    pageContent,
-    metadata: {
-      ...metadata,
-      description: metadata.description.replaceAll('\n', '')
-    }
-  }))
+  let summary: Document[] = []
+  try {
+    const loader = YoutubeLoader.createFromUrl(state.message.url, {
+      language: "en",
+      addVideoInfo: true,
+    });
+
+    const docs = await loader.load();
+    summary = docs.map(({ pageContent, metadata }) => ({
+      pageContent,
+      metadata: {
+        ...metadata,
+        description: metadata.description.replaceAll('\n', '')
+      }
+    }))
+  } catch (e) {
+    throw new Error(`${(e as Error).message}. Contacta a soporte para obtener ayuda`)
+  }
 
   const aiState = getMutableAIState<typeof AI>()
 

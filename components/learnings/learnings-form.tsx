@@ -8,6 +8,7 @@ import { IconSparkles } from "@tabler/icons-react";
 import { PostFormat } from "@/components/posts/post-format";
 import { DEFAULT_LEARNINGS_POST } from "@/lib/constants";
 import { useActions, useUIState } from "ai/rsc";
+import { toast } from "sonner";
 import { type AI } from "@/lib/post/actions";
 
 export function LearningForm() {
@@ -22,6 +23,10 @@ export function LearningForm() {
           e.preventDefault()
 
           const { format, ...rest } = state
+
+          if (!rest.message.how.trim() || !!rest.message.learnship.trim()) {
+            return toast.warning('Debes ingresar un mensaje')
+          }
 
           try {
             const responseMessage = await submitLearningForm({ ...rest, format: format.template })
