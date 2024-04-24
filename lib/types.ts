@@ -15,7 +15,7 @@ export type PostGenerator<T = string> = {
   tone: Tone
   format: FormatTemplateProps
   type: 'post' | 'ideas' | 'job' | 'learning'
-  tag: 'all' | 'ideas' | 'job' | 'learning'
+  tag: 'all' | 'ideas' | 'job' | 'learning' | 'youtube'
 }
 
 type JobDescriptionMessageProps = {
@@ -33,5 +33,10 @@ type LearningMessageProps = {
   keys: string
 }
 
+type YoutubeMessageProps = {
+  url: string
+}
+
 export type PostJobGenerator = PostGenerator<JobDescriptionMessageProps>
 export type PostLearningGenerator = PostGenerator<LearningMessageProps>
+export type PostYoutubeGenerator = PostGenerator<YoutubeMessageProps>

@@ -1,4 +1,5 @@
 import {
+  PostYoutubeGenerator,
   type PostGenerator,
   type PostJobGenerator,
   type PostLearningGenerator
@@ -41,6 +42,20 @@ export const DEFAULT_LEARNINGS_POST: PostLearningGenerator = {
   tone: "",
   type: "post",
   tag: "learning"
+} as const
+
+export const DEFAULT_YOUTUBE_POST: PostYoutubeGenerator = {
+  message: {
+    url: ""
+  },
+  format: {
+    template: "",
+    value: "",
+    type: "youtube-generator"
+  },
+  tone: "",
+  type: "post",
+  tag: "youtube"
 } as const
 
 export const TONE_OPTIONS = [

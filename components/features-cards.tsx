@@ -18,13 +18,6 @@ const FEATURES_CARDS = [
     icon: <IconFileDescription size={30} />,
   },
   {
-    href: '/templates/learnings',
-    title: "Comparte detalles de tu aprendizaje",
-    description: "Comparte tus aprendizajes recientes en un post generado IA.",
-    active: true,
-    icon: <IconBook size={30} />,
-  },
-  {
     href: "/templates/job-description",
     title: "Genera una descripción de trabajo con IA",
     description: "Crea una descripción de trabajo precisa, atractiva y profesional para tus ofertas de empleo.",
@@ -35,13 +28,20 @@ const FEATURES_CARDS = [
     href: '/templates/youtube-post',
     title: "Genera un post con IA desde un video de YouTube",
     description: "Comparte tus videos de YouTube en LinkedIn con un post generado por inteligencia artificial.",
-    active: false,
+    active: true,
     icon: <IconBrandYoutube size={30} />,
   },
   {
-    href: '/mock',
+    href: '/templates/learnings',
+    title: "Comparte detalles de tu aprendizaje",
+    description: "Comparte tus aprendizajes recientes en un post generado IA.",
+    active: true,
+    icon: <IconBook size={30} />,
+  },
+  {
+    href: '/more',
     title: "Feature",
-    description: "Mock",
+    description: "More features coming soon",
     active: false,
     icon: <IconBrandYoutube size={30} />,
   }

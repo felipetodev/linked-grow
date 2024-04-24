@@ -12,11 +12,14 @@ import { Post } from '@/components/posts/post-context'
 import { CardsIdeas } from '@/app/(dashboard)/ideas/components/cards-ideas'
 import { CardsSkeleton } from '@/app/(dashboard)/ideas/components/cards-skeleton'
 import { IconLoader } from '@tabler/icons-react'
+import { YoutubeLoader } from "langchain/document_loaders/web/youtube"
 import { learningDefaultPrompt, postGeneratorPrompt } from '@/lib/prompt'
+import { type Document } from "langchain/document"
 import {
   type PostLearningGenerator,
   type PostGenerator,
-  type PostJobGenerator
+  type PostJobGenerator,
+  PostYoutubeGenerator
 } from '@/lib/types'
 
 const openai = new OpenAI({
@@ -299,6 +302,108 @@ Los beneficios de trabajar en esta empresa son ${state.message.benefits}.
   }
 }
 
+async function submitYoutubeForm(state: PostYoutubeGenerator) {
+  'use server'
+
+  const loader = YoutubeLoader.createFromUrl(state.message.url, {
+    language: "en",
+    addVideoInfo: true,
+  });
+  
+  const docs = await loader.load();
+  const summary: Document[] = docs.map(({ pageContent, metadata }) => ({
+    pageContent,
+    metadata: {
+      ...metadata,
+      description: metadata.description.replaceAll('\n', '')
+    }
+  }))
+
+  const aiState = getMutableAIState<typeof AI>()
+
+  aiState.update({
+    ...aiState.get(),
+    messages: [
+      ...aiState.get().messages,
+      {
+        id: crypto.randomUUID(),
+        role: 'user',
+        content: `\
+Crea un post en LinkedIn a partir de un resumen de un video de YouTube.
+El link del video es: ${state.message.url}
+# Utiliza el siguiente resumen para generar el post:
+---------------------
+Video Title: ${summary[0].metadata.title}
+Video Author: ${summary[0].metadata.author}
+
+${summary[0].pageContent}
+---------------------
+
+# Utiliza la descripción del video para complementar información en el post (solo si es necesario):
+---------------------
+${summary[0].metadata.description}
+---------------------
+Importante!:
+Recuerda dar los creditos al autor del video, nombrando su nombre (con @ o #) y/o su canal y añadiendo el link de youtube al final del post.
+No utilices markdown para las url en el post, solo texto plano.`
+      }
+    ]
+  })
+
+  let textStream: undefined | ReturnType<typeof createStreamableValue<string>>
+  let textNode: undefined | React.ReactNode
+
+  const ui = render({
+    model: 'gpt-3.5-turbo',
+    provider: openai,
+    initial: <IconLoader className="animate-spin" />,
+    messages: [
+      {
+        role: 'system',
+        content: await postGeneratorPrompt({
+          format: state.format,
+          tone: state.tone,
+        } as PostGenerator),
+      },
+      ...aiState.get().messages.map((message: any) => ({
+        role: message.role,
+        content: message.content,
+        name: message.name
+      }))
+    ],
+    text: ({ content, done, delta }) => {
+      if (!textStream) {
+        textStream = createStreamableValue('')
+        textNode = <Post content={textStream.value} />
+      }
+
+      if (done) {
+        textStream.done()
+        aiState.done({
+          ...aiState.get(),
+          messages: [
+            ...aiState.get().messages,
+            {
+              id: crypto.randomUUID(),
+              role: 'assistant',
+              content
+            }
+          ]
+        })
+      } else {
+        textStream.update(delta)
+      }
+
+      return textNode
+    }
+  })
+
+  return {
+    id: crypto.randomUUID(),
+    display: ui,
+  }
+}
+
 export type Message = {
   role: 'user' | 'assistant' | 'system' | 'function' | 'data' | 'tool'
   content: string
@@ -320,7 +425,8 @@ export const AI = createAI<AIState, UIState>({
   actions: {
     submitUserMessage,
     submitLearningForm,
-    submitJobDescriptionForm
+    submitJobDescriptionForm,
+    submitYoutubeForm
   },
   initialUIState: [],
   initialAIState: { chatId: crypto.randomUUID(), messages: [] }
