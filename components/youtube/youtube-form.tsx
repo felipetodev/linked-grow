@@ -6,30 +6,22 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { IconSparkles } from "@tabler/icons-react";
 import { PostFormat } from "@/components/posts/post-format";
-import { YoutubeSkeleton } from "./youtube-skeleton";
+import { LiteYoutube } from "./lite-youtube";
 import { DEFAULT_YOUTUBE_POST } from "@/lib/constants";
 import { useActions, useUIState } from "ai/rsc";
 import { useDebouncedCallback } from "use-debounce";
 import { toast } from "sonner";
+import { getVideoId } from "./utils";
 import { type AI } from "@/lib/post/actions";
-
-function getVideoId(url: string) {
-  if (!url.trim() || !url.includes("https://www.youtube.com/watch?v=")) return ""
-  const { 1: videoPath } = url?.split("?v=")
-  if (!videoPath) return ""
-  const videoId = videoPath.split("&")[0]
-
-  return `https://www.youtube.com/embed/${decodeURIComponent(videoId)}`
-}
 
 export function YoutubeForm() {
   const [state, setState] = useState(DEFAULT_YOUTUBE_POST)
-  const [youtubeEmbedUrl, setYoutubeEmbedUrl] = useState<string>("")
+  const [youtubeUrl, setYoutubeUrl] = useState<string>("")
   const [messages, setMessages] = useUIState<typeof AI>()
   const { submitYoutubeForm } = useActions()
 
   const debouncedUpdates = useDebouncedCallback((youtubeUrl: string) => {
-    setYoutubeEmbedUrl(youtubeUrl);
+    setYoutubeUrl(youtubeUrl);
   }, 500);
 
   return (
@@ -68,19 +60,7 @@ export function YoutubeForm() {
             }}
           />
         </div>
-        {getVideoId(youtubeEmbedUrl) ? (
-          <iframe
-            width="560"
-            className="w-full h-full max-h-[340px]"
-            src={getVideoId(youtubeEmbedUrl)}
-            title="YouTube video player"
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-            referrerPolicy="strict-origin-when-cross-origin"
-            allowFullScreen
-          ></iframe>
-        ) : (
-          <YoutubeSkeleton />
-        )}
+        <LiteYoutube youtubeUrl={youtubeUrl} />
         <PostFormat
           type="post"
           state={state}
