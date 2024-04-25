@@ -8,7 +8,7 @@ export function LiteYoutube({ youtubeUrl }: { youtubeUrl: string }) {
   return (
     <>
       {getVideoId(youtubeUrl) ? (
-        <div className="size-full max-h-[340px] xl:max-h-[500px]">
+        <div className="max-h-[340px] xl:max-h-[500px]">
           <LiteYouTubeEmbed
             id={getVideoId(youtubeUrl)}
             title="YouTube video preview"
