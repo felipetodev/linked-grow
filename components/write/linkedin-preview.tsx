@@ -38,7 +38,7 @@ export function LinkedInPreview({
   const [isOpen, setIsOpen] = useState(false)
 
   const maxChars = 320
-  const truncatedContent = isOpen ? content : content.slice(0, maxChars) + '...'
+  const truncatedContent = isOpen ? content : content.length > maxChars ? `${content.slice(0, maxChars)}...` : content
 
   return (
     <div className="rounded-xl bg-white text-black py-5 w-full max-w-xl h-fit">
@@ -107,7 +107,7 @@ export function LinkedInPreview({
           <LinkedInLikeIcon />
           <LinkedInLoveIcon className="-translate-x-1" />
           <LinkedInCelebrateIcon className="-translate-x-2" />
-          <span className="text-xs opacity-60 font-medium">
+          <span suppressHydrationWarning className="text-xs opacity-60 font-medium">
             {randomLikes}
           </span>
           <div className="flex ml-auto text-xs opacity-60 font-medium">
