@@ -10,7 +10,7 @@ type Props = {
   onDelete: (id: Id<"ideas">) => void
 }
 
-export function IdeasPublished({ ideas, onDelete }: Props) {
+export function IdeasPublished({ ideas = [], onDelete }: Props) {
   return (
     <div className="grid gap-4 grid-cols-[repeat(auto-fill,_minmax(250px,1fr))] mb-6">
       {ideas?.map(({ content, _id: id, _creationTime: createdAt }) => (
@@ -43,6 +43,11 @@ export function IdeasPublished({ ideas, onDelete }: Props) {
           </footer>
         </div>
       ))}
+      {ideas.length === 0 && (
+        <h2 className="text-xl font-semibold">
+          No hay ideas guardadas
+        </h2>
+      )}
     </div>
   )
 }

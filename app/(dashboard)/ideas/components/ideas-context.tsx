@@ -6,8 +6,9 @@ import { useActions, useUIState } from "ai/rsc";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { IdeasForm } from "./ideas-form";
 import { IdeasPublished } from "./ideas-published";
-import { useMutation, useQuery } from "convex/react";
+import { Preloaded, useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
+import { usePreloadedQueryWithAuth } from "@/lib/hooks/use-preload-query";
 import { AI, UIState } from "@/lib/post/actions";
 import { createUrl } from "@/lib/utils";
 import { toast } from "sonner";
@@ -34,8 +35,10 @@ function useIdeas() {
 
 const IdeasTabs = React.forwardRef<
   HTMLDivElement,
-  React.HTMLAttributes<HTMLDivElement>
->((_, ref) => {
+  React.HTMLAttributes<HTMLDivElement> & {
+    preloadedIdeas: Preloaded<typeof api.ideas.getPostsIdeas>;
+  }
+>(({ preloadedIdeas }, ref) => {
   const [savedIdeas, setSavedIdeas] = React.useState<{ id: string }[]>([])
   const [messages, setMessages] = useUIState<typeof AI>()
   const { submitUserMessage } = useActions()
@@ -43,7 +46,7 @@ const IdeasTabs = React.forwardRef<
   const router = useRouter();
   const searchParams = useSearchParams();
 
-  const ideas = useQuery(api.ideas.getPostsIdeas)
+  const ideas = usePreloadedQueryWithAuth(preloadedIdeas)
   const createPostIdea = useMutation(api.ideas.createPostIdea)
   const deleteIdea = useMutation(api.ideas.deleteIdea)
 
@@ -103,7 +106,7 @@ const IdeasTabs = React.forwardRef<
         <TabsList className="mb-4 w-full md:w-auto">
           <TabsTrigger className="w-full md:w-auto md:min-w-28" value="generate">Generar</TabsTrigger>
           <TabsTrigger value="saved" className="w-full md:w-auto">
-            Publicados
+            Guardados
             {ideas?.length! > 0 && (
               <span className="ml-2 text-sm">
                 ({ideas?.length})
