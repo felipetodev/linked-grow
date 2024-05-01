@@ -12,12 +12,22 @@ import { ImageResizer, handleCommandNavigation } from "novel/extensions";
 import { defaultExtensions } from "./extensions";
 
 import { TextButtons } from "./selectors/text-buttons";
-import { Separator } from "../ui/separator";
+import { Separator } from "@/components/ui/separator";
+import { Skeleton } from "@/components/ui/skeleton";
 import GenerativeMenuSwitch from "./selectors/generative-menu-switch";
 import { HeaderEditor } from "./header-editor";
 import { jsonToText, textToJSON } from "./utils";
 
 const extensions = [...defaultExtensions];
+
+export const defaultValue: JSONContent = {
+  type: "doc",
+  content: [
+    {
+      type: "paragraph"
+    }
+  ],
+};
 
 const Editor = ({ text, onEditText }: { text?: string, onEditText?: (text: string) => void }) => {
   const [initialContent, setInitialContent] = useState<undefined | JSONContent>();
@@ -45,10 +55,14 @@ const Editor = ({ text, onEditText }: { text?: string, onEditText?: (text: strin
     // const content = window.localStorage.getItem("content");
 
     // if (content) setInitialContent(JSON.parse(content))
-    setInitialContent(text ? textToJSON(text) : {});
+    setInitialContent(text ? textToJSON(text) : defaultValue);
   }, []);
 
-  if (!initialContent) return null;
+  if (!initialContent) return (
+    <div className="h-[390px] pb-4">
+      <Skeleton className="size-full" />
+    </div>
+  );
 
   return (
     <div className="relative">
