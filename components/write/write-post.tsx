@@ -2,7 +2,7 @@
 
 import * as React from "react"
 import { IconEye, IconPencil } from "@tabler/icons-react";
-import { useMutation, useQuery } from "convex/react";
+import { Preloaded, useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { useMediaQuery } from "@/lib/hooks/use-media-query";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs";
@@ -12,6 +12,7 @@ import { useFileUpload } from "../upload-files-context";
 import { publishPost } from "@/app/actions/post";
 import confetti from "canvas-confetti";
 import { toast } from 'sonner'
+import { usePreloadedQueryWithAuth } from "@/lib/hooks/use-preload-query";
 import { type Id } from "@/convex/_generated/dataModel";
 
 type PostContextProps = {
@@ -38,8 +39,14 @@ function useWritePost() {
   return context;
 }
 
-const WritePost = ({ postId }: { postId: Id<"posts"> }) => {
-  const [content, setContent] = React.useState<string | null>()
+const WritePost = ({
+  postId,
+  preloadedPost
+}: {
+  postId: Id<"posts">,
+  preloadedPost: Preloaded<typeof api.posts.getPost>;
+}) => {
+  const [content, setContent] = React.useState<string>("")
   const [isLoading, setIsLoading] = React.useState(false)
   const isMobile = useMediaQuery("(max-width: 1280px)");
 
@@ -50,7 +57,7 @@ const WritePost = ({ postId }: { postId: Id<"posts"> }) => {
 
   const { file, draftImg, onSetDraftImg } = useFileUpload()
 
-  const post = useQuery(api.posts.getPost, { postId })
+  const post = usePreloadedQueryWithAuth(preloadedPost)
   const updatePost = useMutation(api.posts.updatePost)
   const generateUploadUrl = useMutation(api.files.generateUploadUrl)
 
@@ -66,7 +73,7 @@ const WritePost = ({ postId }: { postId: Id<"posts"> }) => {
     }
   }, [post?.fileUrl])
 
-  if (!content) {
+  if (post == null) {
     // add skeleton loader
     return <span className="font-semibold p-4">Cargando...</span>
   }
@@ -160,7 +167,7 @@ const WritePost = ({ postId }: { postId: Id<"posts"> }) => {
   return (
     <WritePostContext.Provider
       value={{
-        content,
+        content: post.content ?? content,
         isLoading,
         isPublished: post?.status === "published",
         urlRef: urlRef.current,
