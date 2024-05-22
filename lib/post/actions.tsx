@@ -3,11 +3,11 @@ import 'server-only'
 import {
   createAI,
   getMutableAIState,
-  render,
   createStreamableValue,
+  streamUI,
 } from 'ai/rsc'
 import { z } from 'zod'
-import OpenAI from 'openai'
+import { openai } from '@ai-sdk/openai'
 import { Post } from '@/components/posts/post-context'
 import { CardsIdeas } from '@/app/(dashboard)/ideas/components/cards-ideas'
 import { CardsSkeleton } from '@/app/(dashboard)/ideas/components/cards-skeleton'
@@ -21,10 +21,6 @@ import {
   type PostJobGenerator,
   PostYoutubeGenerator
 } from '@/lib/types'
-
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY || ''
-})
 
 function contentMessage({ type, message }: PostGenerator) {
   switch (type) {
@@ -59,10 +55,9 @@ async function submitUserMessage(state: PostGenerator) {
 
   console.log(aiState.get().messages)
 
-  const ui = render({
-    model: 'gpt-3.5-turbo',
-    provider: openai,
-    initial: <IconLoader className="animate-spin" />,
+  const result = await streamUI({
+    model: openai("gpt-3.5-turbo"),
+    initial: <IconLoader className="animate-spin text-red-500 fill-red-500" />,
     messages: [
       {
         role: 'system',
@@ -99,7 +94,7 @@ async function submitUserMessage(state: PostGenerator) {
 
       return textNode
     },
-    functions: {
+    tools: {
       listIdeas: {
         description: 'List of at least 6 different ideas for your next LinkedIn post. Each idea should be separated by a new line.',
         parameters: z.object({
@@ -107,7 +102,7 @@ async function submitUserMessage(state: PostGenerator) {
             message: z.string().describe('The message with the ideas to list')
           })
         }),
-        render: async function* ({ idea }) {
+        generate: async function* ({ idea }) {
           yield (
             <CardsSkeleton />
           )
@@ -144,7 +139,7 @@ async function submitUserMessage(state: PostGenerator) {
 
   return {
     id: crypto.randomUUID(),
-    display: ui,
+    display: result.value,
   }
 }
 
@@ -173,9 +168,8 @@ Ayudame a crear un post para LinkedIn motivando a las demas personas.`
   let textStream: undefined | ReturnType<typeof createStreamableValue<string>>
   let textNode: undefined | React.ReactNode
 
-  const ui = render({
-    model: 'gpt-3.5-turbo',
-    provider: openai,
+  const result = await streamUI({
+    model: openai("gpt-3.5-turbo"),
     initial: <IconLoader className="animate-spin" />,
     messages: [
       {
@@ -220,7 +214,7 @@ Ayudame a crear un post para LinkedIn motivando a las demas personas.`
 
   return {
     id: crypto.randomUUID(),
-    display: ui,
+    display: result.value,
   }
 }
 
@@ -251,9 +245,8 @@ Los beneficios de trabajar en esta empresa son ${state.message.benefits}.
   let textStream: undefined | ReturnType<typeof createStreamableValue<string>>
   let textNode: undefined | React.ReactNode
 
-  const ui = render({
-    model: 'gpt-3.5-turbo',
-    provider: openai,
+  const result = await streamUI({
+    model: openai("gpt-3.5-turbo"),
     initial: <IconLoader className="animate-spin" />,
     messages: [
       {
@@ -298,7 +291,7 @@ Los beneficios de trabajar en esta empresa son ${state.message.benefits}.
 
   return {
     id: crypto.randomUUID(),
-    display: ui,
+    display: result.value,
   }
 }
 
@@ -358,9 +351,8 @@ No utilices markdown para las url en el post, solo texto plano.`
   let textStream: undefined | ReturnType<typeof createStreamableValue<string>>
   let textNode: undefined | React.ReactNode
 
-  const ui = render({
-    model: 'gpt-3.5-turbo',
-    provider: openai,
+  const result = await streamUI({
+    model: openai("gpt-3.5-turbo"),
     initial: <IconLoader className="animate-spin" />,
     messages: [
       {
@@ -405,7 +397,7 @@ No utilices markdown para las url en el post, solo texto plano.`
 
   return {
     id: crypto.randomUUID(),
-    display: ui,
+    display: result.value,
   }
 }
 
